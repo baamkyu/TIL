@@ -1,0 +1,46 @@
+git 시나리오
+1. 각 반 교수님께서 작성하신 코드 받아오기
+git에서 관리하지 않는 폴더에서 git clone 깃주소
+
+git pull origin master : 원격 저장소에 변경된 사항을 local저장소로 불러오기
+
+
+2. 내가 작성한 코드를 git에 올리기
+3. 강의장에서 작성한 코드 집에서 사용하기(or 집->강의장)
+
+Git : 파일 변경사항을 저장하는 것
+
+깃 기본 명령어들
+- git init : 깃으로 관리를 하겠다 선언
+- git status : 깃 상태 확인 명령어 (자주 확인해도 됨)
+- git add . : 모든 파일 추가
+- git restore --staged 폴더명 : add 되돌리기
+- git commit -m "메시지" : commit
+- git config --globl user.name ""
+- git config --global user.email "example.gmail.com"
+
+local repository (여러분들의 컴퓨터에 만들어 놓은 git 저장소)
+깃 저장소를 웹에다가 올려놓고 사용할 거에요
+웹에 올라가 있는 저장소 (remote repository)
+
+git push -u origin master
+
+★★★★★★★★★★★★★★
+강의장에서 변경하고
+git add .
+git commit -m ''
+git push origin master
+
+집으로 이동해서
+git pull origin master
+작업하고 변경사항은
+git add .
+git commit
+git push origin master
+★★★★★★★★★★★★★★
+
+
+만약에 ~에 있는 버전이 최신 버전이 아니다
+pull 하려는 git에 내용이 다 있다
+근데 충돌이 나서 어찌할 바를 모르겠다
+!집에 있는 폴더를 지우고 remote를 클론합니다

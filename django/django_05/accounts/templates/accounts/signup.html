@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>SIGNUP</h1>
+  <form action="{% url 'accounts:signup' %}" method="POST">
+    {% csrf_token %}    <!-- method="POST"일 때 까먹지 말자!! -->
+    {{ form.as_p }}
+    <input type="submit">
+  </form>
+{% endblock content %}
+

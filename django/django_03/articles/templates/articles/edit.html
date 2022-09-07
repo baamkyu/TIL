@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>EDIT</h1>
+<form action="{% url 'articles:update' articles.pk %}" method="POST">
+  {% csrf_token %}
+  <label for="title">Title: </label>
+  <input name="title" type="text", value="{{articles.title}}", id="title">
+  <label for="content">Content: </label>
+  <textarea name="content" id="content" cols="30" rows="10">{{articles.content}}</textarea>
+  <input type="submit" value="저장">
+</form>
+<a href="{% url 'articles:detail' articles.pk %}">[back]</a>
+
+{% endblock content %}
