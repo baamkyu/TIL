@@ -2,7 +2,9 @@
 
 {% block content %}
   <h1>Articles</h1>
-  <a href="{% url 'articles:create' %}">CREATE</a>
+  {% if request.user.is_authenticated %}  <!-- 로그인 된 경우만 CREATE 출력 -->
+    <a href="{% url 'articles:create' %}">CREATE</a>
+  {% endif %}
   <hr>
   {% for article in articles %}
     <p>글 번호 : {{ article.pk }}</p>

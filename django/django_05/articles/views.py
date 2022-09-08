@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
+from django.contrib.auth.decorators import login_required   # 로그인 한 경우만 실행하는 decorate를 생성하기 위한 import
 from .models import Article
 from .forms import ArticleForm
 
@@ -13,7 +14,7 @@ def index(request):
     }
     return render(request, 'articles/index.html', context)
 
-
+@login_required
 @require_http_methods(['GET', 'POST'])
 def create(request):
     if request.method == 'POST':
@@ -37,14 +38,14 @@ def detail(request, pk):
     }
     return render(request, 'articles/detail.html', context)
 
-
+@login_required
 @require_POST
 def delete(request, pk):
     article = Article.objects.get(pk=pk)
     article.delete()
     return redirect('articles:index')
 
-
+@login_required
 @require_http_methods(['GET', 'POST'])
 def update(request, pk):
     article = Article.objects.get(pk=pk)
