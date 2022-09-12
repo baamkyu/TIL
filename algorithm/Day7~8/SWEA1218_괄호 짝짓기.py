@@ -21,7 +21,7 @@ for tc in range(1, T+1):
         else:
             ans = 0
 
-    if stack:
+    if stack:   # stack 안에 원소가 들어있으면 ans = 0
         ans = 0
 
     print(f'#{tc} {ans}')
