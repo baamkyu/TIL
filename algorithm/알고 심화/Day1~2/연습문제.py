@@ -8,19 +8,19 @@ def preorder(n):    # 전위 순회
         print(n, end = ' ')    # visit(n)
         preorder(ch1[n])
         preorder(ch2[n])
-
-def inorder(n):     # 중위 순회
-    if n:
-        inorder(ch1[n])
-        print(n, end = ' ')    # visit(n)
-        inorder(ch2[n])
-
-def postorder(n):   # 후위 순회
-    if n:
-        postorder(ch1[n])
-        postorder(ch2[n])
-        print(n, end = ' ')    # visit (n)
-
+#
+# def inorder(n):     # 중위 순회
+#     if n:
+#         inorder(ch1[n])
+#         print(n, end = ' ')    # visit(n)
+#         inorder(ch2[n])
+#
+# def postorder(n):   # 후위 순회
+#     if n:
+#         postorder(ch1[n])
+#         postorder(ch2[n])
+#         print(n, end = ' ')    # visit (n)
+#
 def find_root(V):   # 시작 노드(루트) 찾기
     for i in range(1, V+1):
         if par[i] == 0: # 부모가 없으면
@@ -32,7 +32,7 @@ def find_root(V):   # 시작 노드(루트) 찾기
 
 V = int(input())    # V : 정점 개수, 마지막 정점 번호
 arr = list(map(int, input().split()))
-E = V - 1            # E : 간선의 개수
+E = V - 1           # E : 간선의 개수
 # 부모를 인덱스로 자식 번호 저장
 ch1 = [0]*(V + 1)
 ch2 = [0]*(V + 1)
@@ -49,9 +49,9 @@ root = find_root(V)
 print('전위순회 : ', end = '')
 preorder(root)   # 전위 순회
 print()
-print('중위순회 : ', end = '')
-inorder(root)    # 중위 순회
-print()
-print('후위순회 : ', end = '')
-postorder(root)  # 후위 순회
-print()
+# print('중위순회 : ', end = '')
+# inorder(root)    # 중위 순회
+# print()
+# print('후위순회 : ', end = '')
+# postorder(root)  # 후위 순회
+# print()

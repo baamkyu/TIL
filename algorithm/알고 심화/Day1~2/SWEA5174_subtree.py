@@ -8,26 +8,34 @@
 7 6 7 4 6 9 4 11 9 5 11 8 5 3 5 2 8 1 8 10
 '''
 
+def cnt_node(n):
+    global cnt
+    if n:
+        cnt += 1    # 노드에 들어갈 때마다 1씩 더하기
+        cnt_node(left[n])   # 왼쪽 자식으로
+        cnt_node(right[n])  # 오른쪽 자식으로
+
+
 T = int(input())
 for tc in range(1, T+1):
     E, N = map(int, input().split())        # 간선의 개수 E, N을 서브트리의 루트로 갖는 노드의 수를 구할 것임
-    arr = list(map(int, input().split()))   # E개의 부모 자식 노드 번호 쌍
+    E_lst = list(map(int, input().split()))   # E개의 부모 자식 노드 번호 쌍
 
-# 루트 찾기
-E = int(input())
-arr = list(map(int, input().split()))
-V = E + 1
-# 부모를 인덱스로 자식 번호 저장
-ch1 = [0]*(V + 1)
-ch2 = [0]*(V + 1)
-# 자식을 인덱스로 부모 번호 저장
-par = [0]*(V+1)
-for i in range(E):
-    p, c = arr[i*2], arr[i*2+1]
-    if ch1[p] == 0:     # 아직 자식이 없으면
-        ch1[p] = c      # 자식1로 저장
-    else:
-        ch2[p] = c
-    par[c] = p
-root = find_root(V)
-print(root)
+    # 노드 번호는 1번부터 E+1번까지 존재
+    left = [0] * (E+2)
+    right = [0] * (E+2)
+
+    for i in range(E):
+        p = E_lst.pop(0)   # 부모 노드
+        c = E_lst.pop(0)   # 자식 노드
+        # 왼쪽 자식이 없다면, 왼쪽 자식부터
+        if not left[p]:
+            left[p] = c
+        # 오른쪽 자식이 없다면, 오른쪽 자식으로
+        else:
+            right[p] = c
+
+    cnt = 0
+    cnt_node(N)  # N번 노드부터 시작하는 서브 트리의 노드 개수 구하기
+
+    print(f'#{tc} {cnt}')
