@@ -26,9 +26,13 @@ def find_root(V):   # 시작 노드(루트) 찾기
         if par[i] == 0: # 부모가 없으면
             return i
 
-V = int(input())            # 정점 개수, 마지막 정점 번호
+'''
+문제 : 순회하여 정점의 번호를 출력하시오
+'''
+
+V = int(input())    # V : 정점 개수, 마지막 정점 번호
 arr = list(map(int, input().split()))
-E = V - 1
+E = V - 1            # E : 간선의 개수
 # 부모를 인덱스로 자식 번호 저장
 ch1 = [0]*(V + 1)
 ch2 = [0]*(V + 1)
