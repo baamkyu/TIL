@@ -347,32 +347,33 @@
 
 
 def inorder(n):     # 중위 순회
-    if n:
-        inorder(c1[n])
-        char_list.append(V[n])
-        inorder(c2[n])
+    if n != 0:
+        inorder(left_c[n])
+        char_list.append(V_list[n])
+        inorder(right_c[n])
 
 T = 10
 for tc in range(1, T+1):
-    N = int(input())    # 노드 개수
-    V = [0] * (N+1)     # 각 노드의 문자를 담을 리스트
-    c1 = [0] * (N+1)    # 왼쪽 자식
-    c2 = [0] * (N+1)    # 오른쪽 자식
+    N = int(input())        # 노드 개수
+    V_list = [0] * (N+1)    # 각 노드의 문자를 담을 리스트
+
+    left_c = [0] * (N+1)    # 왼쪽 자식
+    right_c = [0] * (N+1)   # 오른쪽 자식
 
     for i in range(N):
         input_list = list(map(str, input().split()))
 
-        p = int(input_list[0])  # 부모 노드
-        V[p] = input_list[1]    # 노드의 문자
+        p = int(input_list[0])      # 부모 노드
+        V_list[p] = input_list[1]   # 노드의 문자
 
-        # 왼쪽 자식까지 알려줬다면, 왼쪽 자식 추가
+        # 왼쪽 자식까지만 알려줬다면, 왼쪽 자식 추가
         if len(input_list) == 3:
-            c1[p] = int(input_list[2])
+            left_c[p] = int(input_list[2])
 
         # 오른쪽 자식까지 알려줬다면, 자식 둘 다 추가
         if len(input_list) == 4:
-            c1[p] = int(input_list[2])
-            c2[p] = int(input_list[3])
+            left_c[p] = int(input_list[2])
+            right_c[p] = int(input_list[3])
 
     char_list = []
     inorder(1)
