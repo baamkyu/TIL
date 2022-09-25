@@ -9,11 +9,11 @@ adjList = [[1,2],   # 0
 def dfs(v):     # v: 시작 지점
     global top
     visited[v] = 1      # 시작 지점 방문 표시
-    while True:         # stack에 값이 들어있으면 (맞나??)
-        for w in adjList[v]:    # if (v의 인접 정점 중 방문 안 한 정점 w가 있으면)
+    while True:         # if (v의 인접 정점 중 방문 안 한 정점 w가 있으면)
+        for w in adjList[v]:    # 모든 정점을 돌면서
             if visited[w] == 0: # 방문 안 한 정점 w가 있으면
                 top += 1        # push(v)
-                stack[top] = v  #
+                stack[top] = v
                 v = w           # w에 방문
                 print(v)        # 방문한 걸 프린트
                 visited[w] = 1  # w에 방문한걸 표시
