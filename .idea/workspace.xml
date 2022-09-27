@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1a48a37e-f192-4009-b0bf-82e3e45ceac8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/algorithm/알고 심화/02_Start/연습문제1 - 진수표현.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/알고 심화/02_Start/연습문제1 - 진수표현.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/algorithm/알고 심화/02_Start/연습문제2 - 16진수를 10진수로.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/알고 심화/02_Start/연습문제2 - 16진수를 10진수로.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/알고 심화/05_분할정복, 백트래킹/quick.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/알고 심화/05_분할정복, 백트래킹/quick.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

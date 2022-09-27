@@ -1,5 +1,5 @@
 def partition(l, r):
-    pivot = A[l]
+    pivot = A[l]    # 왼쪽에 있는 값을 피봇으로 설정
     i, j = l, r
     while i <= j:
         while i <= j and A[i] <= pivot:
