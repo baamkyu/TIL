@@ -15,4 +15,10 @@
   </form>
   <hr>
   <a href="{% url 'articles:index' %}">뒤로가기</a>
+  <hr>
+  <form action="#" method="POST">
+    {% csrf_token %}
+    {{ comment_form }}
+    <input type="submit">
+  </form>
 {% endblock content %}

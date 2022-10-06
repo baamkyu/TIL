@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
 from django.contrib.auth.decorators import login_required
 from .models import Article
-from .forms import ArticleForm
+from .forms import ArticleForm, CommentForm
 
 
 # Create your views here.
@@ -34,8 +34,10 @@ def create(request):
 @require_safe
 def detail(request, pk):
     article = Article.objects.get(pk=pk)
+    comment_form = CommentForm()
     context = {
         'article': article,
+        'comment_form': comment_form,
     }
     return render(request, 'articles/detail.html', context)
 
