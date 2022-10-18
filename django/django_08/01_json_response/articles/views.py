@@ -1,4 +1,3 @@
-from stack_data import Serializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render
@@ -19,6 +18,7 @@ def article_html(request):
 def article_json_1(request):
     articles = Article.objects.all()
     articles_json = []
+
     for article in articles:
         articles_json.append(
             {
@@ -27,15 +27,16 @@ def article_json_1(request):
                 'content': article.content,
                 'created_at': article.created_at,
                 'updated_at': article.updated_at,
+
             }
         )
+    return JsonResponse(articles_json, safe=False)
 
 
 def article_json_2(request):
     articles = Article.objects.all()
     data = serializers.serialize('json', articles)
     return HttpResponse(data, content_type='application/json')
-    
 
 
 # @api_view(['GET'])
@@ -43,4 +44,4 @@ def article_json_2(request):
 def article_json_3(request):
     articles = Article.objects.all()
     serializer = ArticleSerializer(articles, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data) 
