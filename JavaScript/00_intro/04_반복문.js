@@ -7,7 +7,7 @@
 // }
 
 // 전통적인 for문
-const numbers = [1, 2, 3, 4, 5]
+const numbers = [5, 4, 3, 2, 1]
 // for (변수할당, 종료조건, 증가) {로직}
 for (let j=0; j < numbers.length; j++) {console.log(numbers[j])}
 
@@ -15,6 +15,12 @@ for (let j=0; j < numbers.length; j++) {console.log(numbers[j])}
 for (const number of numbers) {
   console.log(number, typeof(number))
 }
+
+// for .. in 문 -> 0 \n 1 \n ... 4 출력
+for (const number in numbers) {
+  console.log(number)
+}
+
 
 // Object용 for이며, key를 꺼내는 for이다. in 문을 쓴다
 const person = {myName: 'alex', address: 'seoul'} // key값에는 따옴표를 붙여도 안 붙여도 됨

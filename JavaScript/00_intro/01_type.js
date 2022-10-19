@@ -26,5 +26,9 @@ console.log(
 // Empty Values
 console.log(undefined, null)
 
+// typeof undefined, null
+console.log(typeof(undefined)) // undefined
+console.log(typeof(null)) // object
+
 //Boolean Types -> true, false는 소문자!
 console.log(true, false)
