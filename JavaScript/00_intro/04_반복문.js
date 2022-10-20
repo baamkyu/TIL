@@ -26,4 +26,5 @@ for (const number in numbers) {
 const person = {myName: 'alex', address: 'seoul'} // key값에는 따옴표를 붙여도 안 붙여도 됨
 for (const key in person) {console.log(key, person(key))}
 
-// 그런데 이거 배열을 돌아버리면 스트링으로 
+// 그런데 이거 배열을 돌아버리면 스트링으로 인식
+
