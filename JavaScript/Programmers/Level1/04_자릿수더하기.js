@@ -1,7 +1,10 @@
 function solution(n){
-    let number = n
-    number.toString().split('')
-    console.log(number)
+    let answer = 0
+    let stringNumber = n.toString().split('')
+    for (let i = 0; i < stringNumber.length; i++) {
+        answer += parseInt(stringNumber[i])
+    }
+    return answer
 }
 
-console.log(solution(10))
+console.log(solution(15))
