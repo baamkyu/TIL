@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">버튼</button>
+    <p id="counter">0</p>
+
+    <script>
+      // 버튼 선택
+      const btn = document.querySelector("#btn");
+
+      let countNum = 0;
+
+      // 클릭했을 때 콜백함수가 실행
+      btn.addEventListener("click", function (event) {
+        // p태그의 id = counter를 지정해서 +1시켜줌
+        const pTag = document.querySelector("#counter");
+
+        countNum += 1;
+
+        pTag.innerText = countNum;
+      });
+    </script>
+  </body>
+</html>
