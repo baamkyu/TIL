@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1 id="title">DOM 조작</h1>
+    <p class="text">querySelector</p>
+    <p class="text">querySelectorAll</p>
+    <ul>
+      <li>Javascript</li>
+      <li>Python</li>
+    </ul>
+
+    <script>
+      console.log(document.querySelector("#title")); // # = 'id'  -> DOM 조작 이라는 title 출력
+      console.log(document.querySelectorAll(".text")); // . = class 선택자 -> text를 클래스로 갖는 p태그 두개가 선택됨
+
+      console.log(document.querySelector(".text")); // 매칭되는 첫번째 인자를 가져옴
+
+      console.log(document.querySelectorAll("body > ul > li")); // console -> copy -> copy selector으로 경로 복사
+    </script>
+  </body>
+</html>
