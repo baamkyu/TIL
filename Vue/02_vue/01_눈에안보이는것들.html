@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      div {
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+      }
+
+      .hidden {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="app">
+      <!-- 1 -->
+      <div v-if="false">
+        <!-- 요소가 아예 안 생김 (개발자도구에도, 웹에도 안 보임) -->
+        v-if
+      </div>
+      <!-- 2 -->
+      <div>v-if와 v-show 중간</div>
+      <!-- 3 -->
+      <div v-show="false">
+        <!-- 요소가 생기긴 했으나, display: none이 됨 (개발자도구에는 뜨는데 웹에선 안 보임) -->
+        v-show
+      </div>
+      <!-- 4 -->
+      <div>v-show와 visibility hidden 중간</div>
+      <!-- 5 -->
+      <div class="hidden">
+        <!-- visibility: hidden은 자리는 차지하나 웹에 나오진 않음-->
+        visibility hidden
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: "#app",
+        data: {},
+      });
+    </script>
+  </body>
+</html>

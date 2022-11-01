@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="app">
+      <p>{{ message }}</p>
+      <!-- v-on 사용 (addEventLister) -->
+      <button @click="hello">클릭시 콘솔 찍힘</button>
+      <!-- v-bind 사용 ( ':' ), v-for 사용 -->
+      <input
+        type="submit"
+        v-for="(name, index) in names"
+        :key="index"
+        :value="name"
+      />
+      <!-- <input type="submit" value="철수"> -->
+      <!-- <input type="submit" value="훈이"> -->
+      <!-- <input type="submit" value="영희"> -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      const obj = {
+        el: ".app",
+        data: {
+          message: "hihi",
+          names: ["철수", "훈이", "영희"],
+        },
+        methods: {
+          hello() {
+            console.log("hello");
+          },
+        },
+      };
+
+      const app = new Vue(obj);
+    </script>
+  </body>
+</html>
