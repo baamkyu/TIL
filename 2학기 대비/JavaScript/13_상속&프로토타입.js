@@ -1,3 +1,4 @@
+// 1.
 // 이 부분을 bmw, benz, audi에 상속
 const car = {
   wheels: 4,
@@ -45,8 +46,6 @@ const x5 = {
 // bmw를 x5에 상속시킴 (x5 < bmw < car)
 x5.__proto__ = bmw;
 
-
-
 // 객체가 가지고 있는 property 찾기
 for (p in x5) {
   if (x5.hasOwnProperty(p)) {
@@ -55,3 +54,35 @@ for (p in x5) {
     console.log('x', p);
   }
 }
+
+// 2. 생성자 함수 이용
+const car2 = {
+  wheels: 4,
+  drive() {
+    console.log('drive..')
+  }
+}
+
+// 이렇게 만들어야 color에 들어갈 값을 초기 값에서 바꿀 수 없음
+const Bmw = function (color) {
+  const c = color;
+  this.getColor = function () {
+    console.log(c);
+    }
+  }
+
+Bmw.prototype.wheels = 4;
+Bmw.prototype.drive = function () {
+  console.log('drive..')
+}
+Bmw.prototype.navigation = 1;
+Bmw.prototype.stop = function () {
+  console.log('STOP!!')
+}
+
+const x6 = new Bmw('red')
+const m4 = new Bmw('blue')
+
+console.log(x6)
+console.log(x6 instanceof Bmw)
+console.log(x6.constructor === Bmw)
