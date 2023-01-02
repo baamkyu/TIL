@@ -29,7 +29,7 @@ function reducer(state=initState, action) {
     return {...state, mode: 'CREATE', selected_content_id: action.id}
   }
   if (action.type === 'CREATE_PROCESS') {
-    let newId = state.max_content_id + 1
+    let newId = state.max_contents_id + 1
     let newContents = [
       ...state.contents
       ,{
@@ -41,7 +41,7 @@ function reducer(state=initState, action) {
     return {
       ...state,
       contents: newContents,
-      max_content_id: newId,
+      max_contents_id: newId,
       mode: 'READ',
       selected_content_id: newId
     }
@@ -49,7 +49,37 @@ function reducer(state=initState, action) {
   if (action.type === 'UPDATE') {
     return {...state, mode: 'UPDATE'}
   }
-  return state;
+  if (action.type === 'UPDATE_PROCESS') {
+    let newContents = [
+      ...state.contents
+    ];
+    for (let i=0; i<newContents.length; i++) {
+      if (newContents[i].id === action.id) {
+        newContents[i].title = action.title;
+        newContents[i].desc = action.desc;
+      }
+    }
+    return {
+      ...state,
+      contents: newContents,
+      mode: 'READ',
+      selected_content_id: action.id
+    }
+  }
+  if (action.type === 'DELETE_PROCESS') {
+    let newContents = state.contents.filter(function(e){
+      if (e.id === state.selected_content_id) {
+        return false;
+      } else {return true}
+    })
+    return {
+      ...state,
+      contents: newContents,
+      mode: 'WELCOME',
+    }
+  }
+
+return state;
 }
 
 

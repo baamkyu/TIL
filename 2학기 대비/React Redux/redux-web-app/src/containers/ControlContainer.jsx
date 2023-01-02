@@ -7,6 +7,8 @@ export default connect(
   function(dispatch) {
     return {
         onClick: function(mode) {
+          if (mode === 'DELETE_PROCESS') {
+          }
           dispatch({type: mode})
       }
     }

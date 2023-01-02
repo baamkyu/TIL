@@ -8,7 +8,7 @@ export default connect(
       desc = state.welcome_content.desc
     } else {
         for (let i=0; i<state.contents.length; i++){
-          var d = state.contents[i]
+          let d = state.contents[i]
           if (d.id === state.selected_content_id) {
             title = d.title;
             desc = d.desc;
