@@ -5,5 +5,4 @@ function solution(citations) {
         i++;
     }
     return i;
-    
 }
