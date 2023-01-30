@@ -82,4 +82,13 @@ const checkNickname = () => {
 
 true / false에 따른 조건부 CSS
 
-```<span className={ nicknameCheck ? styles.canuse : styles.cannotuse }>중복확인</span>```
+```
+<span className={ nicknameCheck ? styles.canuse : styles.cannotuse }>중복확인</span>
+```
+
+
+삼항 연산자를 이용한 조건부 렌더링
+```
+{emailCorrect ? <div><button onClick={ mailCheck }>메일로 인증번호 받기</button></div> : null}
+```
+-> emailCorrect 가 true이면 button 출력, false이면 null 출력
