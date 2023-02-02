@@ -92,3 +92,37 @@ true / false에 따른 조건부 CSS
 {emailCorrect ? <div><button onClick={ mailCheck }>메일로 인증번호 받기</button></div> : null}
 ```
 -> emailCorrect 가 true이면 button 출력, false이면 null 출력
+
+### axios API 연결
+💡 axios에는 크게 GET, POST 방식이 있는데 세분화 하면 get, delete, post, put 방식이 있다.
+
+get, delete 방식은 query string 형태로 보내줘야 하고
+ (ex. `axios.get('/member/check/email?email=' + inputId, {withCredentials : false})` )
+
+post, put 방식은 body 형태로 보내줘야 한다!! 
+(ex. `axios.post('/member/check/email', axiosInfo, {withCredentials : false})` )
+```
+// 아이디 중복 확인 API
+  const isSameId = () => {
+    if (isValidId) {
+      axios.get('/member/check/email?email=' + inputId, {withCredentials : false})
+        .then((res) => {
+          const { accessToken } = res.data;
+          // API 요청하는 콜마다 헤더에 accessToken 담아 보내도록 설정
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${accessToken}`;
+          // accessToken을 localStorage, cookie 등에 저장하지 않는다!
+          // console.log("input id: ", inputId)
+          // console.log(res)
+          // setCanUseId(true)
+        })
+        .catch((err) => {
+          if(err.response.status === false){
+            console.log('axios catch');
+          }
+          console.log("Error occurred : " + err);
+        })
+      } else {alert('아이디 유효성 확인ㄱㄱ')}
+  }
+  ```
