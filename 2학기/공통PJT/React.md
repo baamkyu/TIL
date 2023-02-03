@@ -126,3 +126,34 @@ post, put 방식은 body 형태로 보내줘야 한다!!
       } else {alert('아이디 유효성 확인ㄱㄱ')}
   }
   ```
+상단으로 이동하는 토글 버튼
+```
+function MoveToTopToggle() {
+
+    /* const MoveToTop = () => {
+      // top:0 >> 맨위로  behavior:smooth >> 부드럽게 이동할수 있게 설정하는 속성
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }; */
+
+
+    const MoveToTop = () => {
+      document.getElementById("postlist").scrollIntoView(false, {behavior: 'smooth'});
+    };
+      
+
+    
+    // const postList = document.getElementById("postlist").scrollIntoView(true);
+    return (
+    <div className={styles.arrowiconposition}>
+        <img className={styles.arrowicon} alt='' src={MoveToTopBtn} onClick={MoveToTop}></img>
+    </div>
+  )
+}
+```
+  내가 원래 알고 있던 코드는 이런 식으로 window의 scroll위치를 top: 0으로 움직이는 로직의 코드였다.
+  하지만 이번 프로젝트에서의 구성은 윈도우의 스크롤이 한 페이지로 구성되어 있었고 피드를 나타내는 공간을 차지하는 div 안에 피드 아이템 컴포넌트들이 반복되도록 구현되어 있었다.
+  이 때문에 윈도우의 스크롤을 0으로 움직여도 변화가 없었고 그럼 피드아이템의 맨 윗부분으로 스크롤을 이동해야겠다는 생각을 했다.
+  그래서 생각을 한 게 피드를 나타내는 공간을 차지하는 div에 id를 부여했고 그 아이디의 최상단을 불러오자라는 로직이었다.
+  
+  ⭐️ 여기서 의문점 : 
+  scrollIntoView의 첫번째 인자를 true로 하면 상단의 위치로 이동하는 함수가 되고 false로 하면 하단의 위치로 이동하는 함수라는 검색 결과가 있었다. 하지만 여기서 true를 하면 애매한 중간 어딘가?로 이동을 하고 false를 넣어보니 해당 div의 최상단으로 잘 이동하게 된다. 왜일까?! -> 아직 해결 못함..
