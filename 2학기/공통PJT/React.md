@@ -1,6 +1,6 @@
 # 공통PJT Learn
 
-여러 개의 useState를 관리하는 법
+## 여러 개의 useState를 관리하는 법
 
 ```jsx
 function FillPage() {
@@ -24,7 +24,10 @@ function FillPage() {
 }
 ```
 
-회원가입 시 유용하게 사용되는 유효성 검증
+<br>
+<br>
+
+## 회원가입 시 유용하게 사용되는 유효성 검증
 
 ```jsx
 const check_num = /[0-9]/; // 숫자 
@@ -80,20 +83,27 @@ const checkNickname = () => {
 }
 ```
 
-true / false에 따른 조건부 CSS
+<br>
+<br>
+
+## true / false에 따른 조건부 CSS
 
 ```
 <span className={ nicknameCheck ? styles.canuse : styles.cannotuse }>중복확인</span>
 ```
+<br>
+<br>
 
-
-삼항 연산자를 이용한 조건부 렌더링
+## 삼항 연산자를 이용한 조건부 렌더링
 ```
 {emailCorrect ? <div><button onClick={ mailCheck }>메일로 인증번호 받기</button></div> : null}
 ```
 -> emailCorrect 가 true이면 button 출력, false이면 null 출력
 
-### axios API 연결
+<br>
+<br>
+
+## axios API 연결
 💡 axios에는 크게 GET, POST 방식이 있는데 세분화 하면 get, delete, post, put 방식이 있다.
 
 get, delete 방식은 query string 형태로 보내줘야 하고
@@ -126,7 +136,11 @@ post, put 방식은 body 형태로 보내줘야 한다!!
       } else {alert('아이디 유효성 확인ㄱㄱ')}
   }
   ```
-상단으로 이동하는 토글 버튼
+<br>
+<br>
+
+## 상단으로 이동하는 토글 버튼
+
 ```
 function MoveToTopToggle() {
 
@@ -157,3 +171,149 @@ function MoveToTopToggle() {
   
   ⭐️ 여기서 의문점 : 
   scrollIntoView의 첫번째 인자를 true로 하면 상단의 위치로 이동하는 함수가 되고 false로 하면 하단의 위치로 이동하는 함수라는 검색 결과가 있었다. 하지만 여기서 true를 하면 애매한 중간 어딘가?로 이동을 하고 false를 넣어보니 해당 div의 최상단으로 잘 이동하게 된다. 왜일까?! -> 아직 해결 못함..
+<br>
+<br>
+## useState의 상태관리가 한 발짝 늦어지는 오류
+
+필터 아이콘 누른 상태에서 첫 번째 정렬(최신순)을 누르면 최신순으로 정렬해야하나 최신순을 누른 후 다른 버튼을 눌렀을 때가 되어서야 최신순으로 정렬이 된다는 문제가 생겼다 ㅜㅜㅜㅜ!!!
+```
+// 필터 함수
+const onFilter = () => {
+    setFilterStandard(num)
+    if (filterStandard === 1) {
+      getPostList().then((response) => {
+        setPosts(response.postList) // 작동 됨
+        console.log(response.postList)
+        console.log(filterStandard)
+      }
+    )} else if (filterStandard === 2) {
+      getPostListByComment().then((response) => {
+        setPosts(response.postList) // 작동 됨
+        console.log(response.postList)
+        console.log(filterStandard)
+      })
+    } else if (filterStandard === 3) {
+      getPostListByWeather(0, 'SUNNY').then((response) => {
+        setPosts(response);
+        console.log(filterStandard)
+    }
+    )} else if (filterStandard === 4) {
+      getPostListByWeather(0, 'CLOUDY').then((response) => {
+        setPosts(response);
+        console.log(filterStandard)
+      }
+    )} else if (filterStandard === 5) {
+      getPostListByWeather(0, 'RAINY').then((response) => {
+        setPosts(response);
+        console.log(filterStandard)
+    }
+    )}
+  }
+
+{/* 필터 아이콘 누른 상태 */}
+        {filtering ? (
+          <div className={styles.filterselectbox}>
+            <div className={styles.filtertextdiv}>
+              <span
+                className={
+                  filterStandard === 1
+                    ? styles.filtertextstandard
+                    : styles.filtertext
+                }
+                onClick={() => {
+                  onFilter(1);
+                }}
+              >
+                최신순
+              </span>
+```
+`useEffect`를 통해 filterStandard가 변경될 때 onFilter를 실행하도록 설정하니 해결되었다!!
+```
+// filterStandard가 변경될 때 onFilter 함수를 실행해주는 hook
+useEffect(() => {
+    onFilter();
+  }, [filterStandard])
+
+// 클릭했을 때 filterStandard의 값을 바꿔주는 함수
+  const changeFilterStandard = (num) => {
+    setFilterStandard(num)
+  }
+
+// filterStandard에 따라 유효한 데이터만 필터링하여 정렬해주는 함수
+  const onFilter = () => {
+    if (filterStandard === 1) {
+      getPostList().then((response) => {
+        setPosts(response.postList) // 작동 됨
+        console.log(response.postList)
+        console.log(filterStandard)
+      }
+    )} else if (filterStandard === 2) {
+      getPostListByComment().then((response) => {
+        setPosts(response.postList) // 작동 됨
+        console.log(response.postList)
+        console.log(filterStandard)
+      })
+    } else if (filterStandard === 3) {
+      getPostListByWeather(0, 'SUNNY').then((response) => {
+        setPosts(response);
+        console.log(filterStandard)
+    }
+    )} else if (filterStandard === 4) {
+      getPostListByWeather(0, 'CLOUDY').then((response) => {
+        setPosts(response);
+        console.log(filterStandard)
+      }
+    )} else if (filterStandard === 5) {
+      getPostListByWeather(0, 'RAINY').then((response) => {
+        setPosts(response);
+        console.log(filterStandard)
+    }
+    )}
+  }
+
+// return 부분
+{filtering ? (
+          <div className={styles.filterselectbox}>
+            <div className={styles.filtertextdiv}>
+              <span
+                className={
+                  filterStandard === 1
+                    ? styles.filtertextstandard
+                    : styles.filtertext
+                }
+                onClick={() => {
+                  changeFilterStandard(1);
+                }}
+              >
+```
+<aside>
+💡 여태까지 얕은 지식으로 useEffect는 처음 렌더링 될 때 기본으로 띄워주는 hook인 줄 알았는데, 2번째 인자인 [ ] 안에 변수를 넣어주면 해당 변수가 바뀔 때마다 첫번째 인자가 실행되는 hook임을 알게 되었다.
+
+</aside>
+
+<br>
+<br>
+
+### true일 때는 false로, false일 때는 true로 바꾸기
+
+```jsx
+// 원래 사용하던 방식
+const [isValid, setIsValid] = useState(false);
+
+const isValidType = () => {
+	if (isValid === false) {
+		setIsValid(true)
+	} else {
+		setIsValid(false)
+	}
+
+// 더 간단한 방식
+const [isValid, setIsValid] = useState(false);
+  const isValidType = () => {
+    setIsValid((pre) => !pre);
+  };
+```
+
+<aside>
+💡 기존 값의 반대값을 주려는 상황일 때, 한 줄로 사용이 가능하다!
+</aside>
