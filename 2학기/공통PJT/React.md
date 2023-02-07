@@ -306,6 +306,7 @@ const isValidType = () => {
 	} else {
 		setIsValid(false)
 	}
+}
 
 // 더 간단한 방식
 const [isValid, setIsValid] = useState(false);
@@ -317,3 +318,13 @@ const [isValid, setIsValid] = useState(false);
 <aside>
 💡 기존 값의 반대값을 주려는 상황일 때, 한 줄로 사용이 가능하다!
 </aside>
+
+<br>
+<br>
+
+### axios get요청할 때 한글 인자가 전달이 안 된다 (인코딩 깨짐)
+<aside>
+💡 해결법 : `npm i iconv-lite`
+</aside>
+
+⇒ 찾아보니 백에서 알아서 처리해주는 부분인데 url을 잘못 입력해서 전달이 안 되는 거였음..
