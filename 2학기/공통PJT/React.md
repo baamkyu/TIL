@@ -328,3 +328,61 @@ const [isValid, setIsValid] = useState(false);
 </aside>
 
 ⇒ 찾아보니 백에서 알아서 처리해주는 부분인데 url을 잘못 입력해서 전달이 안 되는 거였음..
+
+### Uncaught TypeError: getNotification().then() is not a function
+
+```jsx
+// NotificationAPI.js
+const getCheckEmail = (email) => {
+  let url = `/api/member/check/email?email=${email}`;
+  let value = null;
+  axios
+    .get(url)
+    .then((response) => {
+      value = response.data;
+    })
+    .catch((err) => {
+      console.log("이메일 중복 검사 중 에러 발생");
+    });
+  return value;
+};
+
+// NotificationPage.js
+const [notiList, setNotiList] = useState([]);
+
+useEffect(() => {
+  getNotification().then((res) => {
+    setNotiList(res) 
+  })
+}, [])
+```
+
+위 코드에서 실행을 하니 콘솔창에 Uncaught TypeError: ~~~~ .then is not a function 이라는 에러를 만났다. 
+
+
+```jsx
+// NotificationAPI.js
+const getNotification = async () => {
+  let url = `/api/notification`;
+  let value = {};
+  await axios
+    .get(url)
+    .then((response) => {
+      value = response.data
+      console.dir(value)
+    })
+    .catch((err) => {
+      console.log("알림 가져오는 중 오류 발생");
+    });
+  return value;
+};
+```
+
+asnyc await 를 사용하여 오류 탈출!
+
+<aside>
+💡 **"TypeError: then is not a function" 오류는 `then()`메소드가 프로미스가 아닌 값에 대해 호출될 때 발생합니다.**
+
+**오류를 해결하려면 메서드를 호출하기 전에 값을 약속으로 변환하거나 `then()`유효한 약속에서만 메서드를 호출해야 합니다.**
+
+</aside>
