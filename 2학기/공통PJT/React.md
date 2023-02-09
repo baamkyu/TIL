@@ -386,3 +386,56 @@ asnyc await 를 사용하여 오류 탈출!
 **오류를 해결하려면 메서드를 호출하기 전에 값을 약속으로 변환하거나 `then()`유효한 약속에서만 메서드를 호출해야 합니다.**
 
 </aside>
+
+<br>
+<br>
+
+## useRef()를 통해 input태그 focus하기
+
+[React | Input control 과 useRef의 적절한 사용 (+ Input 유효성 검사)](https://velog.io/@imzzuu/React-Input-control-%EA%B3%BC-useRef%EC%9D%98-%EC%A0%81%EC%A0%88%ED%95%9C-%EC%82%AC%EC%9A%A9-Input-%EC%9C%A0%ED%9A%A8%EC%84%B1-%EA%B2%80%EC%82%AC)
+
+```jsx
+function CheckSignUp() {
+	const onFocus = useRef([]);
+	if (!verifyedId) {
+      alert('사용할 아이디 입력 후 인증을 완료해주세요.')
+      onFocus.current[0].focus(); // onFocus 배열의 첫번째 값을 focus()
+    } else if (!pwMsgColor) {
+      alert('사용 가능하지 않은 비밀번호입니다.')
+      onFocus.current[1].focus();
+    } else if (!pwCheckMsgColor) {
+      alert('동일한 비밀번호를 입력해주세요.')
+      onFocus.current[2].focus();
+    } else if (!nicknameMsgColor) {
+      alert('사용할 수 없는 닉네임입니다.')
+      onFocus.current[3].focus();
+    } else if (!useCheck) {
+      alert('필수 약관을 동의해주세요.')
+    } else if (!canUseNickname) {
+      alert('이미 사용중인 닉네임입니다.')
+      onFocus.current[3].focus();
+    } else if (verifyedId && pwMsgColor && pwCheckMsgColor && nicknameMsgColor && useCheck && canUseNickname) {
+      axios.post('api/member/sign-up', axiosInfo, {withCredentials: false})
+      .then ((res) => {
+        alert('회원가입 성공')
+        navigate('/main', { state: res.data })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+}
+
+return (
+	<div>
+    <p>아이디</p>
+      <input ...
+            ref={(el) => (onFocus.current[0] = el)}/>
+    <p>비밀번호</p>
+      <input ...
+            ref={(el) => (onFocus.current[1] = el)}/>
+    ...
+    </div>
+
+)
+```
