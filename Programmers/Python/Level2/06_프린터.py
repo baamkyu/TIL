@@ -1,4 +1,4 @@
- def solution(priorities, location):
+def solution(priorities, location):
     answer = 0
 
     array1 = [c for c in range(len(priorities))] # index 위치 저장 
