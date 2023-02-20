@@ -49,3 +49,36 @@ function HomePage() {
 	return <h1>The Profile Page</h1>
 }
 ```
+- NextJS에서 제공하는 hook을 이용한 동적 매개변수 값 추출하기
+
+```jsx
+// pages/news/[newsId].js
+import { useRouter } from 'next/router'
+
+function DetailPage() {
+	const router = useRouter()
+
+	const newsId = router.query.newsId
+	console.log(router.query.newsId). 
+
+	return <h1>The Detail Page</h1>
+}
+```
+
+입력 후 /news/anything 이라는 주소를 들어가면 콘솔에 anything이라고 찍혀있을 것이다.
+
+### 5. SPA 라우팅
+
+- <a> tag에 href 속성으로 링크를 이동할 수 있다. 하지만 이 방식으로 사용하게 되면 SPA가 아닌 새로운 url을 요청해 새로운 페이지를 렌더링 하게 된다. 이를 보완하고자 NextJS에서 제공하는 Link 컴포넌트를 활용하면 된다.
+
+```jsx
+import Link from 'next/link'
+
+function NewsPage() {
+	return (
+		<Fragment>
+			<Link href='news/anything'>Clicked To Go Anything Page</Link>
+		</Fragment>
+	)
+}
+```
