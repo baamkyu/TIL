@@ -69,7 +69,7 @@ function DetailPage() {
 
 ### 5. SPA 라우팅
 
-- <a> tag에 href 속성으로 링크를 이동할 수 있다. 하지만 이 방식으로 사용하게 되면 SPA가 아닌 새로운 url을 요청해 새로운 페이지를 렌더링 하게 된다. 이를 보완하고자 NextJS에서 제공하는 Link 컴포넌트를 활용하면 된다.
+- a tag에 href 속성으로 링크를 이동할 수 있다. 하지만 이 방식으로 사용하게 되면 SPA가 아닌 새로운 url을 요청해 새로운 페이지를 렌더링 하게 된다. 이를 보완하고자 NextJS에서 제공하는 Link 컴포넌트를 활용하면 된다.
 
 ```jsx
 import Link from 'next/link'
@@ -82,3 +82,78 @@ function NewsPage() {
 	)
 }
 ```
+
+### 6. NextJS에 내장된 페이지 사전 렌더링 기능
+- 라우터 → (요청) → 페이지에 사전 렌더링한 페이지 반환해서 출력 = 데이터 손실
+
+이러한 경우 데이터가 손실된 상태가 된다
+
+단점: 사전 렌더링한 페이지는 컴포넌트가 첫번째 렌더링 사이클을 마친 이후의 데이터를 콘텐츠로 갖는다
+
+초기에 반환된 HTML 코드에 데이터가 포함되도록 데이터가 있는 페이지를 사전 렌더링하려면 내장된 사전 렌더링 프로세스를 조정해야 한다
+
+### How?
+
+1. 정적 생성
+    
+    사전렌더링이 되는 시점은 프로젝트가 빌드되는 시점이다. (npm run build 할 때)
+    
+    데이터를 업데이트 했는데 렌더링한 페이지를 변경해야 한다면 해당 빌드 프로세스를 다시 시작해야하고 다시 배포해야한다. (로컬 껐다가 다시 켜야함)
+    
+    하지만 이러한 경우 페이지 컴포넌트 파일 안에서 getStaticProps()라는 함수를 export로 내보내면 된다. → `export function getStaticProps()`
+    
+    이 함수는 pages 폴더 안에 있는 파일에서만 작동한다. 다른 폴더에 있는 파일에서는 불가능!
+    
+    이 함수는 이 페이지에서 필요한 데이터를 포함한 props를 준비한다. 또한 이 함수는 비동기적으로 설정될 수 있어서 유용함! `export async function getStaticProps()` → NextJS는 이 Promise가 반환될 때까지 기다린다.
+    
+    ```jsx
+    // pages/index.js
+    // getStaticProps() 함수에서 얻은 props를 여기서 받음
+    function HomePage(props) {
+      return <MeetupList meetups={props.meetups} />
+    }   
+    export async function getStaticProps() {
+    	// 이 안에는 어떤 코드든지 실행 가능함
+    	// ex. API or DB의 데이터 가져오는 로직 모두 가능
+    	// 이 코드는 빌드 프로세스 중에 실행되는 함수이므로 클라이언트 측에서는 실행X
+    	return {
+    		props: {
+    			meetups: DUMMY_MEETUPS
+    		}, revalidate: 10 // 서버에 요청하는 간격 (초단위)
+    	}; // 얻은 데이터를 반환해줘야함
+     }
+    export default HomePage;
+    ```
+    
+2. 서버 사이드 렌더링
+    
+    정적 생성에서 revalidate 설정으로 해결되지 않는 동적인 반응을 해야하는 경우 혹은 데이터가 바로바로 바뀌는 경우에 사용
+    
+    ```jsx
+    // pages/index.js
+    // getServerSideProps() 함수에서 얻은 props를 여기서 받음
+    function HomePage(props) {
+      return <MeetupList meetups={props.meetups} />
+    }   
+    export async function getServerSideProps(context) {
+    	const req = context.req // 요청
+    	const res = context.res // 반응
+    
+    	// 이 안에는 어떤 코드든지 실행 가능함
+    	// ex. API or DB의 데이터 가져오는 로직 모두 가능
+    	// 이 코드는 빌드 프로세스 중에 실행되는 함수이므로 클라이언트 측에서는 실행X
+    
+    	return {
+    		props: {
+    			meetups: DUMMY_MEETUPS
+    		}
+    	}; // 얻은 데이터를 반환해줘야함
+     }
+    export default HomePage;
+    ```
+    
+    - getStaticProps() 와의 차이점 : getServerSideProps()는 빌드 프로세스 중에는 실행X
+    - getServerSideProps()의 단점 : 요청이 들어올 때까지 페이지가 만들어지는걸 기다림
+    - 어떤 방법이 더 좋을까?
+        - 요청객체에 접근할 필요가 없다면 정적 생성이 더 나음 ex.인증
+        - 요청객체에 접근 해야하거나 초단위로 여러번 바뀌는 데이터를 가지고 있다면 revalidate가 도움이 안 되기 때문에 서버사이드 렌더링이 나음
