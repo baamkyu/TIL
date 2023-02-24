@@ -159,4 +159,12 @@ function NewsPage() {
         - 요청객체에 접근 해야하거나 초단위로 여러번 바뀌는 데이터를 가지고 있다면 revalidate가 도움이 안 되기 때문에 서버사이드 렌더링이 나음
 
     
-     getStaticPaths()
+getStaticPaths
+
+만약 동적 페이지라면 getStaticProps을 이용한다
+
+serversideprops를 사용하는게 아니라 사용하지 않는다면 getstaticprops를 이용해야 합니다
+
+```jsx
+export async function getStaticPaths() {}
+```
