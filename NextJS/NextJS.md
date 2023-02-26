@@ -166,5 +166,7 @@ getStaticPaths
 serversideprops를 사용하는게 아니라 사용하지 않는다면 getstaticprops를 이용해야 합니다
 
 ```jsx
-export async function getStaticPaths() {}
+export async function getStaticPaths() {
+    // 채워넣기
+}
 ```
