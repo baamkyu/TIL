@@ -150,7 +150,7 @@ function add(num1: number, num2: number): void {
     ```
     
 - 매개변수 여러 타입 지정하기
-    
+  
     ```tsx
     function add (num1: number, num2: number | undefined): number {
       if (num2 !== undefined) {
