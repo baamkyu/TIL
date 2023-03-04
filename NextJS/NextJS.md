@@ -14,7 +14,7 @@
 - 파일 기반 라우팅
     - React의 라우팅(`<Route path=”/pagename”></Route>`)과는 다르게 NextJS는 파일 기반 라우팅으로 라우팅 간소화가 가능하다
 - 풀스택 앱 빌드
-    - React 프로젝트에 백엔드API를 쉽게 추가할 수 있다
+    - React 프로젝트에 백엔드API를 쉽게 추가할 수 있다.
 
 ### 3. Next.js 프로젝트 만들기
 
