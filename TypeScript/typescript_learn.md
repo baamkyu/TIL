@@ -33,13 +33,72 @@ let isCorrect: boolean = true
 
 타입스크립트는 초기에 선언한 변수의 타입과 다른 타입의 값을 할당하면 에러를 나타낸다.
 
-### 1.2 조금 더 복잡한 자료형 - Array, Object
+### 1.2 그 외 기본형 타입 - 튜플, void, never, enum, null, undefined
+
+```tsx
+// 튜플
+let b:[string, number]
+b = ['z', 1]
+b[0].toLowerCase() // 오류 안 남
+b[1].toLowerCase() // 타입 오류
+
+// void
+function sayHello():void{
+	console.log('hello')
+}
+
+// never
+function showError():never {
+    throw new Error()
+}
+
+function infLoop():never{
+    while (true) {
+        // do something.. never stop
+    }
+}
+
+// enum - 비슷한 값끼리 묶은 것
+// 수동으로 값을 주지 않으면 0부터 숫자로 입력
+enum Os {
+    Window = 3,
+    Ios, // 4
+    Android // 5
+}
+
+enum Os {
+    Window = 3,
+    Ios = 10
+    Android // 11
+}
+console.log(Os[10]) // Ios
+
+enum Os {
+    Window = 'win',
+    Ios = 'ios'
+    Android = 'and'
+}
+console.log(Os['window']) = 'win'
+
+// type을 Os로 지정하면 Os의 값들만 선언해줄 수 있음
+let myOs:Os;
+myOs = Os.Window
+
+// null, undefined
+let a:null = null
+let b:undefined = undefined
+```
+
+### 1.3 조금 더 복잡한 자료형 - Array, Object
 
 ### Array
 
 ```tsx
 let hobbies: string[];
 hobbies = ['Sports', 'Cooking', 25]
+
+let hobbies2: Array<string>
+hobbies2 = ['Sports', 'Cooking', 25]
 ```
 
 ### Object
@@ -104,7 +163,182 @@ baamkyu = 25
 
 타입 추론을 사용한 경우가 아니라면 타입을 선언해주는 모든 곳에서 사용 가능하다.
 
-# 3. 함수
+# 3. 인터페이스
+
+인터페이스는 상호 간에 정의한 약속 혹은 규칙을 의미한다.
+
+```
+// 오류 발생
+let user:object;
+
+user = {
+    name: 'baamkyu',
+    age: 25
+}
+
+console.log(user.name)
+
+```
+
+위 코드에서 객체의 key에 접근하려 하면 에러를 발생시킨다.
+
+또한 초기에 문자열로 지정한 `name`을 숫자로 바꿔도 에러 없이 바뀌어 버린다.
+
+이는 각 key의 타입을 지정하지 않았기 때문이다.
+
+따라서, 인터페이스를 이용해 객체, 함수, 클래스 등을 구현하면 초기 지정한 타입을 쉽게 유지할 수 있다.
+
+### 객체 구현
+
+```tsx
+interface User {
+	name: string
+	age: number
+}
+
+const myUser: User = {
+	name: 'baamkyu',
+	age: 25
+}
+
+console.log(myUser.name) // baamkyu
+myUser.age = 'a' // 타입 에러 발생
+```
+
+### 옵셔널 속성
+
+```tsx
+interface User {	
+	name: string
+	age: number
+	// ?를 이용해 있어도 되고 없어도 되는 key인 것을 선언해준다
+	gender?: string
+}
+
+// gender없어도 문제없이 생성
+const myUser: User = {
+	name: 'baamkyu',
+	age: 25
+}
+
+// 이후에도 생성 가능
+myUser.gender = 'male'
+```
+
+### 읽기 전용 속성 (readonly)
+
+```tsx
+interface User {
+    name: string
+    age: number
+    gender?: string
+		// 변경이 불가능한 key로 선언한다
+    readonly birthYear: number
+}
+
+let user: User = {
+    name: 'baamkyu',
+    age: 25,
+    birthYear: 1999
+}
+
+// 오류 발생
+user.birthYear = 2000
+```
+
+### 정의하지 않은 속성 사용
+
+```tsx
+interface User {
+  name: string
+  age: number
+  // [아무 문자열: key 타입]: value 타입
+  [propName: number]: string
+  // 모든 타입의 value 저장하기
+  // [propName: string]: any
+}
+
+const myUser: User = {
+  name: 'baamkyu',
+  age: 25,
+  // number: string 쌍의 요소를 계속 추가 가능
+  1: 'A',
+  2: 'B'
+}
+```
+
+### 리터럴 타입 지정
+
+```tsx
+type Score = 'A' | 'B' | 'C' | 'D' | 'F'
+
+interface User {
+  name: string
+  age: number
+  [grade: number]: Score
+}
+
+const myUser: User = {
+  name: 'baamkyu',
+  age: 25,
+  // number: string 쌍의 요소를 계속 추가 가능
+  1: 'A',
+  2: 'B'
+}
+```
+
+### 함수의 정의
+
+```tsx
+// 함수1
+interface Add {
+    (num1: number, num2: number): number;
+}
+
+const add : Add = function(x, y) {
+    return x + y
+}
+
+add (10, 20)
+
+// 함수2
+interface IsAdult {
+    (age: number): boolean
+}
+
+const a:IsAdult = (age) => {
+    return age > 19
+}
+
+a(25) // true
+```
+
+### 클래스 정의
+
+```tsx
+interface Car {
+  color: string
+  wheels: number
+  start(): void
+}
+
+class Bmw implements Car {
+  color
+  constructor (c: string) {
+    this.color = c
+  }
+  wheels = 4
+  start() {
+    console.log('Go')
+  }
+}
+
+const myCar = new Bmw('red')
+console.log(myCar.color) // red
+myCar.start() // Go
+```
+
+# 4. 함수
 
 ### 함수의 정의
 
@@ -150,7 +384,7 @@ function add(num1: number, num2: number): void {
     ```
     
 - 매개변수 여러 타입 지정하기
-  
+    
     ```tsx
     function add (num1: number, num2: number | undefined): number {
       if (num2 !== undefined) {
