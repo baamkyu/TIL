@@ -12,4 +12,4 @@ def solution(s):
     #         answer += i[1:].lower()
     # print(answer)
 
-solution('my  Name is1 BK12 ')
+solution('my  Name is1 BK12 ') 
