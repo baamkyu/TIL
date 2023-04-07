@@ -6,5 +6,5 @@ for tc in range(1, T+1):
   for i in range(len(set_word)):
     for j in input_word:
       if j == set_word[i]:
-        check[i] += 1
+        check[i] += 1 
   print(f'#{tc} {max(check)}')
