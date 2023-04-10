@@ -12,7 +12,7 @@ for tc in range(1, T+1):
             else:
                 is_perfect = 0
     if stack:
-        pass
+        pass 
     else:
         is_perfect = 1
 print(f'#{tc} {is_perfect}')
