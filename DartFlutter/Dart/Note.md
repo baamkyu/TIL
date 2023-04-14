@@ -186,27 +186,226 @@ void main() {
 }
 ```
 
-# Flutter
+### 변수 선언 정리
 
-### 규칙
-
-- 프로젝트 명은 모두 소문자
-- `lib > main.dart` 파일이 메인 페이지
-- ESLint Off
+1. var 변수
+    
+    dart의 스타일 가이드에 따르면 웬만한 변수는 var로 사용하는 것을 권장함
     
     ```dart
-    # test > analysis_options.yaml
-    rules:
-    	prefer_typing_uninitialized_variables : false
-    	prefer_const_constructors_in_immutables : false
-    	prefer_const_constructors : false
-    	avoid_print : false
+    void main() {
+    	var name = 'bk';
+    }
     ```
     
-- 메인페이지 코딩 시작 전
+
+1. var 변수
+    
+    dart의 스타일 가이드에 따르면 타입을 사용하는 방식은 class의 property를 작성할 때 사용하는 걸 권장함
     
     ```dart
-    # void main() 만 냅두고 나머지 다 지움
-    # stless 입력 후 클래스(?)명 입력
-    
+    void main() {
+    	int i = 12;
+    }
     ```
+    
+
+1. final 변수
+    
+    final은 값을 재할당하지 못하는 변수
+    
+    ```dart
+    void main() {
+    	final name = 'bk';
+    	name = 'bk2'; //오류, 수정불가
+    }
+    ```
+    
+
+1. dynamic 타입
+    
+    어떤 데이터 타입이 들어올지 모를 때 사용하는 변수
+    
+    ```dart
+    void main() {
+    	dynamic name;
+    	if (name is String) {
+    		// 문자열 함수 사용
+    	}
+    }
+    ```
+    
+
+1. null safety
+    
+    잘못된 상태의 변수를 참조하는 걸 막아줌
+    
+    null 값을 참조하지 못하게 해줌
+    
+    null 이 들어갈 수 있는 경우에 사용하는 변수
+    
+    ```dart
+    void main() {
+    	String? name = 'nico';
+    	name = null;
+    	//1.
+    	if (name != null) {
+    		name.isEmpty;	
+    	}
+    
+    	//2.
+    	name?.isEmpty;
+    }
+    ```
+    
+2. late
+    
+    final, var, String 같은 것들 앞에 써줄 수 있는 수식어
+    
+    데이터는 나중에 넣고 나중에 변수를 사용하고자 할 때 사용
+    
+    ```dart
+    void main() {
+    	late final/var/타입 name;
+    	name = '12';
+    	print(name); // 12
+    }
+    ```
+    
+3. const
+    
+    컴파일 할 때 값을 이미 알고 있어야 하는 변수 (수정 불가)
+    
+
+## #2. Data Types (데이터 타입)
+
+Dart는 거의 모든 자료형과 function이 object로 이루어져 있다.
+
+ex. String bool int double 등
+
+### Lists
+
+Dart에서의 리스트는 collection if와 collection for을 지원한다.
+
+리스트의 마지막은 ‘,’ 로 끝내자. 그러면 자동으로 포매팅 (자동줄바꿈)이 된다.
+
+```dart
+void main() {
+	// 아래 두 개는 같음 하지만, 웬만하면 var을 쓰자!
+	var numbers = [1, 2, 3, 4,];
+	List<int> numbers = [1, 2, 3, 4,];
+	// 함수들
+	numbers.add(1);
+	numbers.first;
+	numbers.last;
+}
+```
+
+### collection if
+
+조건에 따라 리스트에 추가할 수 있다.
+
+```dart
+void main() {
+	// 아래 두 개는 같음 하지만, 웬만하면 var을 쓰자!
+	var numbers = [
+	1,
+	2,
+	3,
+	4,
+	// giveMeFive가 true이면 리스트가 5를 가진다
+	if(giveMeFive) 5, 
+	];
+}
+```
+
+### String interpolation
+
+```dart
+void main() {
+	var name = 'bk';
+	var greeting = 'My name is $name';
+	print(greeting); // My name is bk 출력
+
+	var age = 20;
+	var greeting2 = 'My name is $name, and I\'m ${age + 5} years old';
+	print(greeting2) // My name is bk, and I'm 25 years old
+}
+```
+
+### collection for
+
+```dart
+void main() {
+	var oldFriends = ['nico', 'lynn'];
+	var friends = ['john', 'david', for (var friend in oldFriends) "★ $friend",];
+	print(friends) // [john, david, ★nico, ★lynn]
+}
+```
+
+### Map
+
+Map을 사용해서 key, value의 타입을 지정해줄 수 있다.
+
+Map을 사용하지 않으면 아래와 같다.
+
+```dart
+void main() {
+	var player = {
+// 아래와 같은 경우 Type이 Object로 지정되고, 아무 타입이나 올 수 있다. (like any type in TS)
+		'name': 'bk',
+		'age': 25.5,
+		'super': false,
+	}
+}
+```
+
+Map을 사용해서 타입을 지정해주자.
+
+```dart
+void main() {
+// key: int형, value: bool형으로 선언해보자
+	Map<int, bool> player = {
+			1: true,
+			2: false,
+			3: true
+	}
+}
+
+// 예제2.
+void main() {
+// key: int형으로 구성된 리스트, value: bool형으로 선언해보자
+	Map<List<int>, bool> player = {
+		[1, 2, 3, 5]: true,
+	}
+}
+
+// 예제3.
+void main() {
+	List<Map<String, Object>> players = [
+		{'name': 'bk', age: 25},
+		{'name': 'abc', age: 20},
+	]
+}
+```
+
+Map도 자료형이기 때문에 그에 따른 함수를 갖는다.
+
+이를 확인하려면 Map. 을 쳐서 어떠한 함수가 있는지 확인해봐라!
+
+### Sets
+
+Set은 Python의 Set과 같이 중복을 제거하고 하나의 요소로 받는다.
+
+```dart
+void main() {
+	// Set 생성 방법 1.
+	var numbers = {1, 2, 3, 4};
+	// Set 생성 방법 2.
+	Set<int> numbers = {1, 2, 3, 4};
+	numbers.add(1);
+	numbers.add(1);
+	numbers.add(2);
+	print(numbers); // {1, 2, 3, 4}
+}
+```
