@@ -409,3 +409,143 @@ void main() {
 	print(numbers); // {1, 2, 3, 4}
 }
 ```
+
+# #3. Functions
+
+### 함수 선언
+
+void 는 아무것도 return 하지 않을 때 사용하는 것이다.
+
+따라서, return 값이 있으면 function을 정의해줘야 한다.
+
+```dart
+String sayHello(String name) {
+	return "Hello $name";
+}
+
+void main() {
+	print(sayHello('bk')); // "Hello bk" 프린트
+}
+```
+
+Dart에서도 작성하고 리턴하고자 하는 코드가 한 줄이라면 간단하게 화살표 함수 가능
+
+```dart
+// 예시 1.
+String sayHello(String name) => "Hello $name";
+
+void main() {
+	print(sayHello('bk'); // "Hello bk" 프린트
+}
+
+// 예시 2.
+num plus(num a, num b) => a+ b;
+```
+
+함수를 하나 만들어보자
+
+```dart
+String sayHello(String name, int age, String country) {
+	return "Hello $name, age $age, country $country"
+}
+
+void main() {
+	print(sayHello('bk', 25, 'korea'); // "Hello bk" 프린트
+}
+```
+
+하지만 ‘bk’, 25, ‘korea’가 무엇을 의미하는지 잘 모를 수 있다.
+
+따라서 named argument라는 것이 존재한다.
+
+함수를 생성할 때, { } 안에 필요한 argument를 입력하고
+
+함수를 사용할 때는 순서를 맞추지 않아도 상관없다.
+
+```dart
+String sayHello({String name, int age, String country}) {
+	return "Hello $name, age $age, country $country"
+}
+
+void main() {
+	print(sayHello(
+	age: 12,
+	country: 'korea',
+	name: 'bk'
+	)); // "Hello bk" 프린트
+}
+```
+
+해당 argument에 값을 안 넘겨줄 경우 오류가 난다. 이 경우 두 가지 방법으로 해결할 수 있다.
+
+1. named argument (age, country, name)에 default value를 정하기
+
+```dart
+String sayHello({
+	String name = 'bk', 
+	int age = 25, 
+	String country = 'korea'
+}) {
+	return "Hello $name, age $age, country $country"
+}
+```
+
+1. required modifier를 이용해서 필수 값으로 만들 수 있다
+    
+    이러한 경우 반드시 값을 입력해야 한다.
+    
+
+```dart
+String sayHello({
+	required String name, 
+	required int age, 
+	required String country,
+}) {
+	return "Hello $name, age $age, country $country"
+}
+```
+
+Optional Positional Parameters
+
+```dart
+String sayHello(
+	String name, 
+	int age, 
+// not required 지정 후 default값을 설정해주면 입력을 하지 않아도 됨
+	[String? country = 'korea']) {
+	return "Hello $name, age $age, country $country"
+}
+
+void main() {
+// country를 입력하지 않으면 기본값은 korea가 된다
+	sayHello('bk', 25, );
+}
+```
+
+내 이름을 대문자로 return하기
+
+### Dart에서도 삼항연산자 가능
+
+### QQ operator 라는 기능도 있음
+
+left ?? right ⇒이 연산자에서 left가 null 이면 right를 return한다.
+
+```dart
+// 방법 1. 삼항연산자 사용
+String capitalizeName(String? name) => name != null ? name.toUpperCase() : 'null';
+
+// 방법 2. ?? 사용
+String capitalizeName(String? name) => name.toUpperCase() ?? null;
+
+void main() {
+	capitalizeName('bk');
+}
+```
+
+```dart
+// name이 null이면 bk 할당
+void main() {
+	String? name;
+	name ??= 'bk';
+}
+```
