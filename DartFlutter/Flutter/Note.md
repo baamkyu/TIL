@@ -222,3 +222,284 @@ body: SizedBox(
 2. 예시화면을 쪼개서 구성이 어떻게 되어있는지 네모 그리기
 3. 바깥 네모부터 하나하나 위젯으로 만들기
 4. 마무리 디자인
+
+### 위젯 만들기
+
+- 커스텀 위젯은 class로 만든다
+- class안에 build 라는 함수 만드는 부분
+- 변하지 않는 UI들은 벼수 함수로 축약해도 상관없음
+- 아무거나 다 커스텀위젯을 만들면 성능 이슈가 생길 수 있음. 따라서, 재사용 많은 UI들만 변수에 삽입
+
+```dart
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(),
+        body: ShopItem(),
+      )
+    );
+  }
+}
+
+// stless 입력 후 class 명 지정 후 코드 작성
+// StatelessWidget = 완벽한 위젯 완성품
+// StatelessWidget의 변수, 함수를 ShopItem으로 가져간다.
+class ShopItem extends StatelessWidget {
+  const ShopItem({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: Text('안녕'),
+    );
+  }
+
+	build(context) {
+		return SizedBox(
+			child: Text('안녕'),
+		);
+	}
+}
+```
+
+### ListView
+
+```dart
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(),
+        body: ListView.builder(
+					itemCount: 3, // return 값을 몇 번 반복할 거임?
+					itemBuilder: (context, i) { // c = context, i = 반복문이 돌면서 1씩 증가
+						// 1. 
+						return Text(i) // 이게 itemCount만큼 반복 -> 0, 1, 2 출력
+
+						// 2. 아래의 ListTile이 3번 반복되어 출력됨
+						return ListTile(
+							leading: Image.asset('profile.png'),
+							title: Text('홍길동'),
+					)
+				}
+      )
+    );
+  }
+}
+
+```
+
+### 버튼 눌렀을 때 액션 생성
+
+```dart
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
+	
+	var a = 1;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+				floatingActionButton: FloatingActionButton(
+					// 버튼의 컨텐츠에서 a를 볼 수 있게 함
+					child: Text(a.toString()),
+					onPressed: (){
+						// 버튼 누르면 여기 로직이 실행됨
+						a++;
+						print(a);	
+					},	
+				),
+        appBar: AppBar(),
+        body: ListView.builder(
+					itemCount: 3,
+					itemBuilder: (context, i) { 
+					// 아래의 ListTile이 3번 반복되어 출력됨
+						return ListTile(
+							leading: Image.asset('profile.png'),
+							title: Text('홍길동'),
+					)
+				}
+      )
+    );
+  }
+}
+
+```
+
+### Stateful 위젯 만들기 (실시간 값이 변경하는 위젯)
+
+재렌더링 하는 법 : state쓰면 state변할 때마다 자동 재렌더링 된다.
+
+```dart
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+// // stful 입력 후 탭
+// class Test extends StatefulWidget {
+//   const Test({Key? key}) : super(key: key);
+//
+//   @override
+//   State<Test> createState() => _TestState();
+// }
+//
+// class _TestState extends State<Test> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Placeholder();
+//   }
+// }
+ 
+
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var a = 1; // 자동으로 state가 됨, 값이 변하면 a를 쓰는 위젯이 재렌더링됨
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Text(a.toString()),
+          onPressed: () {
+            // 버튼 누르면 여기 로직이 실행됨
+            print(a);
+            // state값 변경하는 함수
+            setState(() {
+              a++;
+            });
+          },
+        ),
+        appBar: AppBar(),
+        body: ListView.builder(
+          itemCount: 3,
+          itemBuilder: (context, i) {
+            // 아래의 ListTile이 3번 반복되어 출력됨
+            return ListTile(
+              title: const Text('홍길동'),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Flutter의 for 문
+
+itemBuilder(context, i) {} 를 사용한다.
+
+```dart
+class _MyAppState extends State<MyApp> {
+  var a = 1; // 자동으로 state가 됨, 값이 변하면 a를 쓰는 위젯이 재렌더링됨
+  var name = ['김영숙', '홍길동', '피자집'];
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(),
+        body: ListView.builder(
+          itemCount: 3,
+          itemBuilder: (context, i) {
+            // 아래의 ListTile이 3번 반복되어 출력됨
+            return ListTile(
+              title: Text(name[i]),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
+### 좋아요 버튼 눌렀을 때 좋아요 개수(state값) ++
+
+```dart
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var a = 1; // 자동으로 state가 됨, 값이 변하면 a를 쓰는 위젯이 재렌더링됨
+  var name = ['김영숙', '홍길동', '피자집'];
+  var likeCount = [0, 0, 0];
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(),
+        body: ListView.builder(
+          itemCount: 3,
+          itemBuilder: (context, i) {
+            // 아래의 ListTile이 3번 반복되어 출력됨
+            return ListTile(
+              leading: Text(likeCount[i].toString()),
+              title: Text(name[i]),
+              trailing: ElevatedButton(child: Icon(Icons.thumb_up), onPressed: (){
+                setState((){
+                  likeCount[i]++;
+                });
+              }),
+
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Dialog / 모달창
