@@ -503,3 +503,353 @@ class _MyAppState extends State<MyApp> {
 ```
 
 ### Dialog / 모달창
+
+Dialog 연습
+
+```dart
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var a = 1; // Automatically becomes a state. When the value changes, the widget using 'a' will be re-rendered.
+  var name = ['김영숙', '홍길동', '피자집'];
+  var likeCount = [0, 0, 0];
+
+  @override
+  Widget build(context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(child: Text('hi'));
+            },
+          );
+        },
+      ),
+      appBar: AppBar(),
+      body: ListView.builder(
+        itemCount: 3,
+        itemBuilder: (c, i){
+          return ListTile(
+            leading: Icon(Icons.person),
+            title: Text(name[i])
+          );
+        },
+      ),
+    );
+  }
+}
+```
+
+Dialog 커스텀 (제목, 내용, 확인, 취소버튼)
+
+```dart
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var a = 1; // Automatically becomes a state. When the value changes, the widget using 'a' will be re-rendered.
+  var name = ['김영숙', '홍길동', '피자집'];
+  var likeCount = [0, 0, 0];
+
+  @override
+  Widget build(context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Title'),
+              content: const Text('content'),
+              actions: <Widget> [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('취소'),
+                  ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text('확인'),
+                )
+              ]
+            )
+          );
+        },
+      ),
+      appBar: AppBar(),
+      body: ListView.builder(
+        itemCount: 3,
+        itemBuilder: (c, i){
+          return ListTile(
+            leading: Icon(Icons.person),
+            title: Text(name[i])
+          );
+        },
+      ),
+    );
+  }
+}
+```
+
+Dialog 커스텀 ( 인풋창, 확인, 취소 버튼)
+
+```dart
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var a = 1; // Automatically becomes a state. When the value changes, the widget using 'a' will be re-rendered.
+  var name = ['김영숙', '홍길동', '피자집'];
+  var likeCount = [0, 0, 0];
+
+  @override
+  Widget build(context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Title'),
+              content: TextField(
+                onChanged: (value) {
+
+                },
+                decoration: InputDecoration(hintText: "여기에 입력하세요."),
+              ),
+              actions: <Widget> [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('취소'),
+                  ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text('확인'),
+                )
+              ]
+            )
+          );
+        },
+      ),
+      appBar: AppBar(),
+      body: ListView.builder(
+        itemCount: 3,
+        itemBuilder: (c, i){
+          return ListTile(
+            leading: Icon(Icons.person),
+            title: Text(name[i])
+          );
+        },
+      ),
+    );
+  }
+}
+```
+
+### 부모 → 자식 state 전송하는 법
+
+- 꿀팁 : 많은 곳에서 쓰는 state는 최대한 부모 위젯에 만들자
+1. 보내고
+2. 등록하고
+3. 사용한다
+
+```dart
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var a = 1; // Automatically becomes a state. When the value changes, the widget using 'a' will be re-rendered.
+  var name = ['김영숙', '홍길동', '피자집'];
+  var likeCount = [0, 0, 0];
+
+  @override
+  Widget build(context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+// 1. 보낸다
+                return DialogUI(friendsCount: a);
+              });
+            },
+          ),
+      appBar: AppBar(),
+      body: ListView.builder(
+        itemCount: 3,
+        itemBuilder: (c, i){
+          return ListTile(
+              leading: Icon(Icons.person),
+              title: Text(name[i])
+          );
+        },
+      ),
+    );
+  }
+}
+
+class DialogUI extends StatelessWidget {
+// 2. 등록한다 (this.friendsCount 선언)
+  const DialogUI({Key? key, this.friendsCount}) : super(key: key);
+  final friendsCount;
+// 3. 사용한다 (final friendsCount로 사용하겠다 선언)
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: SizedBox(
+        width: 300, height: 300,
+        child: Column(
+          children: [
+            Text(friendsCount.toString()),
+            TextField(),
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: Text('취소')),
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: Text('완료'))
+          ]
+        )
+      )
+    );
+  }
+}
+```
+
+### 자식 → 부모 state 수정하려면
+
+1. 부모에 수정 함수 만들기
+2. 자식 보내기
+
+연락처 추가하기
+
+```dart
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var friendsCount = 3; // Automatically becomes a state. When the value changes, the widget using 'a' will be re-rendered.
+  var name = ['김영숙', '홍길동', '피자집'];
+  var likeCount = [0, 0, 0];
+
+  addOne(input) {
+    setState((){
+      friendsCount++;
+      name.add(input.text);
+    });
+  }
+
+  @override
+  Widget build(context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return DialogUI(friendsCount: friendsCount, addOne : addOne);
+              });
+            },
+          ),
+      appBar: AppBar(),
+      body: ListView.builder(
+        itemCount: name.length,
+        itemBuilder: (c, i){
+          return ListTile(
+              leading: Icon(Icons.person),
+              title: Text(name[i])
+          );
+        },
+      ),
+    );
+  }
+}
+
+class DialogUI extends StatelessWidget {
+  DialogUI({Key? key, this.friendsCount, this.addOne }) : super(key: key);
+  final friendsCount;
+  final addOne;
+  var inputData = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: SizedBox(
+        width: 300, height: 300,
+        child: Column(
+          children: [
+            Text(friendsCount.toString()),
+            TextField(controller: inputData,),
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: Text('취소')),
+            TextButton(onPressed: (){
+              addOne(inputData);
+              Navigator.pop(context);
+            }, child: Text('완료'))
+          ]
+        )
+      )
+    );
+  }
+}
+```
