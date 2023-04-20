@@ -515,3 +515,26 @@ class _HomeState extends State<Home> {
 아이콘을 누르면 하나의 페이지를 더 띄우는 로직
 
 Upload 위젯을 현재 페이지에 더 띄울 거임 (Navigator.push 사용)
+
+
+### 폰에 있는 사진 가져오기
+
+아이폰은 따로 설정을 해줘야함
+
+```dart
+// ios/Runner/Info.plist
+<dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>사진첩좀 써도 됩니까</string>
+	<key>NSCameraUsageDescription</key>
+	<string>카메라 써도 됩니까</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>마이크 권한좀요</string>
+```
+
+사진 가져올 폴더에 import 해주기
+
+```dart
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+```
