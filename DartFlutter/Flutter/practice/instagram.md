@@ -538,3 +538,360 @@ Upload 위젯을 현재 페이지에 더 띄울 거임 (Navigator.push 사용)
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 ```
+
+사진 필터 적용 가능 → 패키지 설치해야함 `photofilters`
+
+[photofilters | Flutter Package](https://pub.dev/packages/photofilters)
+
+글작성하는 UI 작성
+
+- 주의할 점
+    - Image.network()에는 http부터 시작하는 이미지만 가능함
+    - 하지만, 유저가 선택한 이미지는 _File 타입임
+    - 해결방법 : 이미지가 String타입이면 `Image.network()` 사용, String타입이 아니면 `Image.file()` 사용
+- 글 작성 로직
+    - State에 데이터를 추가해줌
+
+```dart
+import 'package:flutter/material.dart';
+import './style.dart' as style;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/rendering.dart'; // 무한스크롤 구현하기 위해 필요한 패키지
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
+void main() {
+  runApp(
+      MaterialApp(
+        theme: style.theme,
+        home: MyApp()
+      )
+  );
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var tab = 0; // 첫째 페이지: 0, 둘째 페이지: 1
+  var data = [];
+  var userImg;
+  var userContent;
+
+  // 게시글 리스트에 게시물 추가하기
+  addMyData(){
+    var myData = {
+      'id': data.length,
+      'image': userImg, // 사용자가 설정한 사진
+      'likes': 5,
+      'date': 'July 25',
+      'content': userContent, // 사용자가 작성한 글 내용
+      'liked': false,
+      'user': 'John Kim'
+    };
+    setState(() {
+      data.insert(0, myData);
+    });
+  }
+
+  setUserContent(content){
+    setState(() {
+      userContent = content;
+    });
+  }
+
+  // GET 요청 성공시 렌더링, 실패시 get요청 실패
+  getData() async {
+    var d = await http.get(
+        Uri.parse('https://codingapple1.github.io/app/data.json'));
+    if (d.statusCode == 200) {
+      setState(() {
+        data = jsonDecode(d.body);
+      });
+    } else {
+      return Text('get요청 실패');
+    }
+  }
+
+  // 무한스크롤시 데이터 추가하기
+  addData(moreData){
+    setState((){
+      data.add(moreData);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Instagram'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_box_outlined),
+            onPressed: () async{
+              var picker = ImagePicker();
+              // var image = await picker.pickMultiImage(); // 앨범 띄워서 사진 여러장 고르기
+              var image = await picker.pickImage(source: ImageSource.gallery); // 앨범 띄워서 사진 한장 고르기
+              // var image = await picker.pickImage(source: ImageSource.camera); // 카메라 띄우기
+              if (image != null){
+                setState((){
+                  userImg = File(image.path);
+                });
+              }
+
+              Navigator.push(context,
+                MaterialPageRoute(builder: (c) => Upload(
+                  userImg: userImg,
+                  setUserContent: setUserContent,
+                  addMyData: addMyData,))
+              );
+            },
+            iconSize: 24,
+          )
+        ]
+      ),
+      body: [Home(data: data, addData: addData), Text('샵 페이지')][tab],
+      bottomNavigationBar: BottomNavigationBar(
+        // 라벨 적기 싫을 때 적는 코드
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        // i는 지금 버튼 누른 버튼의 번호
+        onTap: (i){
+          setState(() {
+            tab = i;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: '홈'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_bag_outlined),
+              label: '샵'),
+        ],
+      ),
+    );
+  }
+}
+
+class Upload extends StatelessWidget {
+  const Upload({Key? key, this.userImg, this.setUserContent, this.addMyData}) : super(key: key);
+  final userImg;
+  final setUserContent;
+  final addMyData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar( actions: [
+        IconButton(onPressed: (){
+          addMyData();
+        }, icon: Icon(Icons.send))
+      ]),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.file(userImg),
+          TextField(onChanged: (String content){
+            setUserContent(content);
+          },),
+          IconButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.close))
+        ]
+      )
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  const Home({Key? key, required this.data, required this.addData}) : super(key: key);
+  final data; // 부모가 보낸건 보통 수정하지 않으므로 final로
+  final Function(dynamic) addData;
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  var scroll = ScrollController();
+
+  getMore() async{
+    var r = await http.get(Uri.parse('https://codingapple1.github.io/app/more1.json'));
+    var moreData = jsonDecode(r.body);
+    widget.addData(moreData);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // Lister : 왼쪽에 있는 변수(scroll)가 변할 때 마다 안에 있는 로직이 작동
+    scroll.addListener(() {
+      // print(scroll.position.pixels); // 스크롤의 위치 출려
+      // print(scroll.position.maxScrollExtent); // 스크롤을 아래로 내릴 수 있는 영역
+      // print(scroll.position.userScrollDirection); // 스크롤 되는 방향
+      if (scroll.position.pixels == scroll.position.maxScrollExtent){
+        getMore();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+  // 첫 class 안에 있던 변수 사용은 변수명 앞에 widget. 을 붙여야 한다
+    if (widget.data.isNotEmpty) {
+      return ListView.builder(
+        controller: scroll, // 우자기 얼마나 스크롤했는지 정보들이 scroll 변수에 저장됨
+        itemCount: widget.data.length, // data 변수의 길이로 itemCount 설정
+        itemBuilder: (context, index) {
+          // index에 따라 동적으로 아이템 생성
+          return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  widget.data[index]['image'].runtimeType == String
+                      ? Image.network(widget.data[index]['image'])
+                      : Image.file(widget.data[index]['image']),
+                  Text('좋아요 : ${widget.data[index]['likes'].toString()}'),
+                  Text('글쓴이 : ${widget.data[index]['user'].toString()}'),
+                  Text('글내용 : ${widget.data[index]['content'].toString()}'),
+                ],
+              );
+        },
+      );
+    } else {
+      return Text('데이터 없음');
+    }
+  }
+}
+```
+
+하지만 State로 데이터를 관리하는 경우, 사용자가 앱을 껐다 키면 초기화된다.
+
+### 데이터 보존방법
+
+1. 서버로 보내서 DB에 저장
+2. 폰 메모리카드에 저장 (shared preferences 이용) → 데이터 삭제, 캐시 삭제 누르지 않으면 보관
+
+<aside>
+💡 중요한 건 DB에 보관, 덜 중요한 건 shared preferences에 보관
+
+</aside>
+
+### shared preferences
+
+1. 패키지 다운로드
+
+해당 코드 입력 후 Pub get
+
+```dart
+// pubspec.yaml
+dependencies:
+	// ...
+	shared_preferences: ^2.0.11
+```
+
+1. import
+
+```dart
+// main.dart
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+```
+
+1. 저장하고 싶은 데이터 함수 실행
+
+```dart
+class _MyAppState extends State<MyApp> {
+	...
+	saveData() async {
+	    var storage = await SharedPreferences.getInstance(); // 저장공간 오픈하는 법
+	    storage.setString('name', 'john'); // key, value 형태로 저장
+	    var result = storage.getString('name'); // john
+	    print(result);
+	  }
+
+	@override
+  void initState() {
+    super.initState();
+    saveData(); // 위의 함수가 실행되면서 john 출력
+  }
+};
+```
+
+위는 데이터를 저장하는 방법이다. 그럼 데이터 삭제하는 방법은?
+
+```dart
+class _MyAppState extends State<MyApp> {
+	...
+	saveData() async {
+	    var storage = await SharedPreferences.getInstance(); // 저장공간 오픈하는 법
+	    storage.setString('name', 'john'); // key, value 형태로 저장
+	    var result = storage.remove('name'); // john
+	    print(result);
+	  }
+
+	@override
+  void initState() {
+    super.initState();
+    saveData(); // 위의 함수가 실행되면서 john 출력
+  }
+};
+```
+
+1. map자료를 저장하고 싶으면?
+    
+    JSON 형태로 변환해서 저장하자!
+    
+
+```dart
+class _MyAppState extends State<MyApp> {
+	...
+	saveData() async {
+	    var storage = await SharedPreferences.getInstance(); // 저장공간 오픈하는 법
+	    var map = {'age': 20}; // map 형태의 자료
+			storage.setString('map', jsonEncode(map)); // key, value 형태로 저장
+	    var result = storage.getString('map') ?? 'null'; // null 체크 후 {'age': 20} 출력
+	    print(resut) // {'age': 20}
+			print(jsonDecode(result)['age']); // 20 -> 반드시 null 체크 해야함!
+	  }
+
+	@override
+  void initState() {
+    super.initState();
+    saveData(); // 위의 함수가 실행되면서 john 출력
+  }
+};
+```
+
+<aside>
+💡 Shared Preferences 활용해서 인스타처럼 이미 본 게시물은 위에 표시하기
+
+</aside>
+
+GET요청으로 게시글을 조회함
+
+수신완료한 게시물은 변수에 담아둔다
+
+해당 변수를 shared preferences 사용해서 저장해둔다
+
+앱을 다시 키면 shared preferences에 있는 게시물을 맨 위로 가져올 수 있음
+
+⇒ 장점 : 봤던 게시물은 빠르게 로드되고, 서버와 주고받는 데이터 양을 줄일 수 있음!
+
+⇒ 이미지는 저장할 수 없기 때문에 캐싱을 이용한다.
+
+`cached_network_image` 라는 패키지 사용
