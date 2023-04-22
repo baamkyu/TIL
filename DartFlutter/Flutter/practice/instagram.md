@@ -895,3 +895,290 @@ GET요청으로 게시글을 조회함
 ⇒ 이미지는 저장할 수 없기 때문에 캐싱을 이용한다.
 
 `cached_network_image` 라는 패키지 사용
+
+### 페이지 전환 애니메이션
+
+1. MaterialPageRoute
+    
+    쉬우나 커스텀의 한계가 있음
+    
+    ```dart
+    class _HomeState extends State<Home> {
+    	...
+    	@override
+    	  Widget build(BuildContext context) {
+    	  // 첫 class 안에 있던 변수 사용은 변수명 앞에 widget. 을 붙여야 한다
+    	    if (widget.data.isNotEmpty) {
+    	      return ListView.builder(
+    	        controller: scroll, // 우자기 얼마나 스크롤했는지 정보들이 scroll 변수에 저장됨
+    	        itemCount: widget.data.length, // data 변수의 길이로 itemCount 설정
+    	        itemBuilder: (context, index) {
+    	          // index에 따라 동적으로 아이템 생성
+    	          return Column(
+    	                crossAxisAlignment: CrossAxisAlignment.start,
+    	                children: [
+    	                  widget.data[index]['image'].runtimeType == String
+    	                      ? Image.network(widget.data[index]['image'])
+    	                      : Image.file(widget.data[index]['image']),
+    	
+    	                  // 누르면 프로필로 이동, 페이지전환 애니메이션 작동
+    	                  GestureDetector(
+                        child: Text(widget.data[index]['user']),
+                        onTap: (){
+                          Navigator.push(context,
+                            // 페이지 트랜지션
+    												// 1. 기본
+                            MaterialPageRoute(builder: (c) => Profile())
+    												// 2. 아이폰 스타일 (오른쪽에서 왼쪽으로 슬라이드되어서 들어옴)
+    												CupertinoPageRoute(builder: (c) => Profile())
+                          );
+                        },
+                      ),
+                      Text('좋아요 : ${widget.data[index]['likes'].toString()}'),
+                      Text('글쓴이 : ${widget.data[index]['user'].toString()}'),
+                      Text('글내용 : ${widget.data[index]['content'].toString()}'),
+                    ],
+                  );
+    	        },
+    	      );
+    	    } else {
+    	      return Text('데이터 없음');
+    	    }
+    	  }
+    };
+    
+    class Profile extends StatelessWidget {
+      const Profile({Key? key}) : super(key: key);
+    
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(),
+          body: Text('프로필페이지'),
+        );
+      }
+    ```
+    
+2. PageRouteBuilder
+    
+    transitionsBuilder: () ⇒ 애니메이션용위젯();
+    
+    - 애니메이션용 위젯 종류
+    
+    `FadeTransition()` 
+    
+    `PositionedTransition()` : 포지션 변경하는 트랜지션
+    
+    `ScaleTransition()` : 사이즈 줄였다 키웠다
+    
+    `RotationTransition()` : 회전 트랜지션
+    
+    `SlideTransition()` : 슬라이드 트랜지션
+    
+    `Hero()` : 기존에 있던게 커지는 효과
+    
+
+아래는 글 작성자의 닉네임을 클릭시 프로필로 이동하는 로직인데, 페이지 전환시 작동하는 애니메이션에 대해 다룬 코드이다.
+
+```dart
+class _HomeState extends State<Home> {
+	...
+	@override
+	  Widget build(BuildContext context) {
+	  // 첫 class 안에 있던 변수 사용은 변수명 앞에 widget. 을 붙여야 한다
+	    if (widget.data.isNotEmpty) {
+	      return ListView.builder(
+	        controller: scroll, // 우자기 얼마나 스크롤했는지 정보들이 scroll 변수에 저장됨
+	        itemCount: widget.data.length, // data 변수의 길이로 itemCount 설정
+	        itemBuilder: (context, index) {
+	          // index에 따라 동적으로 아이템 생성
+	          return Column(
+	                crossAxisAlignment: CrossAxisAlignment.start,
+	                children: [
+	                  widget.data[index]['image'].runtimeType == String
+	                      ? Image.network(widget.data[index]['image'])
+	                      : Image.file(widget.data[index]['image']),
+	
+	                  // 누르면 프로필로 이동, 페이지전환 애니메이션 작동
+	                  GestureDetector(
+	                    child: Text(widget.data[index]['user']),
+	                    onTap: (){
+	                      Navigator.push(context,
+	
+	                        // 아이폰디자인, import해야함, 오른쪽에서 왼쪽으로 덮어쓰기
+	                        // CupertinoPageRoute(builder: (c) => Profile())
+	
+	                        // 페이지 트랜지션
+	                        PageRouteBuilder(
+	                            pageBuilder: (c, a1, a2) => Profile(),
+	                            // 1.
+	                            transitionsBuilder: (c, a1, a2, child) =>
+	                                FadeTransition(opacity: a1, child: child)
+	                            // 2. 왼쪽에서 들어오는 애니메이션 Offset의 첫번째: x좌표, 두번째: y좌표
+	                            // transitionsBuilder: (c, a1, a2, child) =>
+	                            //   SlideTransition(
+	                            //     position: Tween(
+	                            //       begin: Offset(-1.0, 0.0),
+	                            //       end: Offset(0.0, 0.0),
+	                            //     ).animate(a1),
+	                            //     child: child,
+	                            //   )
+	                        )
+	                        // MaterialPageRoute(builder: (c) => Profile())
+	                      );
+	                    },
+
+	                    // onDoubleTap: (){}, // 더블클릭시 작동
+	                    // onHorizontalDragStart: (){}, // 스와이프 했을 때 작동
+	                    // onLongPress: (){}, // 길게 눌렀을 때 작동
+	                    // onScaleStart: (){}, // 확대했을 때 작동
+	                  ),
+	                  Text('좋아요 : ${widget.data[index]['likes'].toString()}'),
+	                  Text('글쓴이 : ${widget.data[index]['user'].toString()}'),
+	                  Text('글내용 : ${widget.data[index]['content'].toString()}'),
+	                ],
+	              );
+	        },
+	      );
+	    } else {
+	      return Text('데이터 없음');
+	    }
+	  }
+};
+
+class Profile extends StatelessWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Text('프로필페이지'),
+    );
+  }
+```
+
+### State를 3-step으로 보내기 싫으면 Provider 사용
+
+기존에 다른 클래스의 State를 사용하기 위해서는 (ex. Myapp()의 State를 Home()클래스의 자식인 Profile()에서 사용하려면)
+
+Myapp() → Home() → Profile() 순서대로 State를 내려줘야 한다.
+
+커스텀위젯이 많아질수록 state전송이 힘들고 코드가 복잡해진다.
+
+이런 경우, Provider 사용하면 해결!
+
+### Provider란?
+
+클래스 안에서 State를 선언하는 것이 아닌 따로 State보관함(Provider)을 만들어 State를 관리한다.
+
+### Provider 사용법
+
+1. 패키지 코드 작성 후 Pub get
+
+```dart
+// pubspec.yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^0.13.4
+  image_picker: ^0.8.4+4
+  shared_preferences: ^2.0.11
+  provider: ^6.0.1
+```
+
+1. import
+
+```dart
+// 프로젝트 파일
+import 'package:provider/provider.dart';
+```
+
+1. Store 생성
+
+```dart
+class Store1 extends ChangeNotifier {
+  var name = 'john kim';
+}
+```
+
+1. MaterialApp을 감싸준다
+
+```dart
+void main() {
+  runApp(
+    ChangeNotifierProvider(create: (c) => Store1(),
+      child: MaterialApp(
+        theme: style.theme,
+        home: MyApp()
+      ),
+    )
+  );
+}
+```
+
+1. 사용
+    
+    Profile 클래스에서 AppBar의 title에 나타내보자
+    
+
+```dart
+class Profile extends StatelessWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+				// Provider 사용법
+        title: Text(context.watch<Store1>().name),
+      ),
+      body: Text('프로필페이지'),
+    );
+  }
+}
+```
+
+### Provider에서 관리하는 State 변경하는 법
+
+1. Provider에 state 변경함수 만들기
+    
+    변경함수 작동 후 바로 재렌더링 하려면 `notifyListers()` 
+    
+
+```dart
+class Store1 extends ChangeNotifier {
+  var name = 'john kim';
+  changeName(){
+    name = 'john park';
+    notifyListeners(); // 함수 실행되면 재랜더링
+  }
+}
+```
+
+1. 함수 사용
+
+```dart
+class Profile extends StatelessWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.watch<Store1>().name),
+      ),
+      body: Column(
+        children: [
+          ElevatedButton(onPressed: (){
+
+						// 여기서는 context.read로 사용!!
+            context.read<Store1>().changeName();
+
+          }, child: Text('버튼'),)
+        ]
+      )
+    );
+  }
+}
+```
