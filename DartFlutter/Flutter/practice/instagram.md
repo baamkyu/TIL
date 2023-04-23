@@ -1156,7 +1156,7 @@ class Store1 extends ChangeNotifier {
 }
 ```
 
-1. 함수 사용
+2. 함수 사용
 
 ```dart
 class Profile extends StatelessWidget {
@@ -1182,3 +1182,239 @@ class Profile extends StatelessWidget {
   }
 }
 ```
+
+### 팔로우 상태 확인해서 팔로우중이 아니면 +1, 팔로우중이면 -1 해보자
+
+1. Store에 함수 만들기
+
+```dart
+class Store1 extends ChangeNotifier {
+  var name = 'john kim';
+  var followNum = 0;
+  var isFollowing = false;
+
+  // 팔로우중이 아니면 팔로우+1, 팔로우 중임을 기록
+  // 팔로우중이면 팔로우-1, 팔로우 중이 아님을 기록
+  clickedFollow() {
+    if (isFollowing == false){
+      followNum += 1;
+      isFollowing = true;
+    } else if(isFollowing == true){
+      followNum -= 1;
+      isFollowing = false;
+    }
+    notifyListeners();
+  }
+}
+```
+
+1. 함수 사용하기
+
+```dart
+class Profile extends StatelessWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.watch<Store1>().name),
+      ),
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey,
+          ),
+          Text('팔로워 ${context.watch<Store1>().followNum}명'),
+          ElevatedButton(onPressed: (){
+            context.read<Store1>().clickedFollow();
+          }, child: context.watch<Store1>().isFollowing == false
+              ? Text('팔로우')
+              : Text('언팔로우')),
+        ]
+      )
+    );
+  }
+}
+```
+
+### Store 여러개 사용하고 싶다면?
+
+1. `ChangeNotifierProvider`이 아닌 `MultiProvider` 사용
+
+```dart
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (c) => Store1()),
+        ChangeNotifierProvider(create: (c) => Store2()),
+      ],
+      child: MaterialApp(
+        theme: style.theme,
+        home: MyApp()
+      ),
+    )
+  );
+}
+```
+
+### 프로필 페이지 방문시 GET요청해서 데이터 가져오고 State에 데이터 담으려면?
+
+1. Store에 데이터 담을 변수 생성 후 데이터 담기
+2. **`jsonDecode`** 함수를 사용하여 **`r.body`**에 해당하는 JSON 데이터를 Dart의 **`Map`** 객체로 변환합니다.
+3. 변환된 **`Map`** 객체에서 **`result['profileImage']`** 값을 가져와 **`profileImage`** 변수에 할당합니다. 이때 **`cast<String>()`** 메서드를 사용하여 **`result['profileImage']`**가 **`List<dynamic>`** 타입이었을 경우에 문자열(**`String`**) 타입의 리스트로 형변환을 수행합니다.
+
+```dart
+class Store1 extends ChangeNotifier {
+  var followNum = 0;
+  var isFollowing = false;
+	var ProfileImage = [];
+
+	getData() async{
+    var r = await http.get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
+
+    // JSON데이터를 Map으로 변환
+		var result = jsonDecode(r.body);
+
+		// Map에서 result['profileImage']를 가져와 List<dynamic>타입을 String타입의 리스트로 변환
+    profileImage = result['profileImage'].cast<String>();
+
+    notifyListeners();
+  }
+
+	// ...
+}
+```
+
+1. Store의 데이터 가져와 렌더링 (GridView UI 포함)
+
+```dart
+class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  @override
+  Widget build(BuildContext context) {
+    List<String> profileImages = context.watch<Store1>().profileImage
+        .map((dynamic imageUrl) => imageUrl as String).toList();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.watch<Store2>().name),
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 16), // 상단 간격 조절
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 가로 정렬
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.grey,
+              ),
+              Text('팔로워 ${context.watch<Store1>().followNum}명'),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<Store1>().clickedFollow();
+                },
+                child: context.watch<Store1>().isFollowing == false
+                    ? Text('팔로우')
+                    : Text('언팔로우'),
+              ),
+            ],
+          ),
+          SizedBox(height: 16), // Text와 GridView 사이의 간격 조절
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // 한 줄에 3개의 사진
+                mainAxisSpacing: 8, // 사진들 사이의 간격
+                crossAxisSpacing: 8, // 사진들 사이의 간격
+              ),
+              itemCount: profileImages.length,
+              itemBuilder: (context, index) {
+                return Image.network(
+                  profileImages[index],
+                  width: 100,
+                  height: 100,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### 앱 사용자에게 알림 보내기
+
+1. 패키지 설치
+
+```dart
+// pubspec.yaml
+```
+
+1. 알림 셋팅 코드 작성
+    
+    설정 코드가 기므로 하나의 파일 생성해서 작성하는 것을 권장! `notification.dart` 생성
+    
+
+```dart
+// notification.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+final notifications = FlutterLocalNotificationsPlugin();
+
+//1. 앱로드시 실행할 기본설정
+initNotification() async {
+
+  //안드로이드용 아이콘파일 이름
+	// png 파일로 흰색 아이콘스럽게 올려야함 (배경없어야함!)
+  var androidSetting = AndroidInitializationSettings('app_icon');
+
+  //ios에서 앱 로드시 유저에게 권한요청하려면
+  var iosSetting = IOSInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
+  var initializationSettings = InitializationSettings(
+      android: androidSetting,
+      iOS: iosSetting
+  );
+  await notifications.initialize(
+    initializationSettings,
+    //알림 누를때 함수실행하고 싶으면
+    //onSelectNotification: 함수명추가
+  );
+}
+```
+
+1. `main.dart`에서 `notification.dart` import 후 앱 처음 실행할 때 알림 받을 수 있게 하기
+
+```dart
+// main.dart
+import './notification.dart';
+
+// MyApp의 initState에서 initNotification 함수 작동하게 하기 (앱 키자마자 작동)
+@override
+  void initState() {
+    super.initState();
+		// ...
+    initNotification();
+  }
+```
+
+1. 알림에 사용할 app_icon 파일을 디렉토리에 추가한다
+    
+    디텍토리 위치 : `android/app/main/res/drawable/app_icon.png`
