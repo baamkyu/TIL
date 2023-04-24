@@ -1362,7 +1362,7 @@ class _ProfileState extends State<Profile> {
 // pubspec.yaml
 ```
 
-1. 알림 셋팅 코드 작성
+2. 알림 셋팅 코드 작성
     
     설정 코드가 기므로 하나의 파일 생성해서 작성하는 것을 권장! `notification.dart` 생성
     
@@ -1400,7 +1400,7 @@ initNotification() async {
 }
 ```
 
-1. `main.dart`에서 `notification.dart` import 후 앱 처음 실행할 때 알림 받을 수 있게 하기
+3. `main.dart`에서 `notification.dart` import 후 앱 처음 실행할 때 알림 받을 수 있게 하기
 
 ```dart
 // main.dart
@@ -1415,6 +1415,6 @@ import './notification.dart';
   }
 ```
 
-1. 알림에 사용할 app_icon 파일을 디렉토리에 추가한다
+4. 알림에 사용할 app_icon 파일을 디렉토리에 추가한다
     
     디텍토리 위치 : `android/app/main/res/drawable/app_icon.png`
