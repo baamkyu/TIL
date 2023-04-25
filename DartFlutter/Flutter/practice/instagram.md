@@ -804,7 +804,7 @@ dependencies:
 	shared_preferences: ^2.0.11
 ```
 
-1. import
+2. import
 
 ```dart
 // main.dart
@@ -812,7 +812,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 ```
 
-1. 저장하고 싶은 데이터 함수 실행
+3. 저장하고 싶은 데이터 함수 실행
 
 ```dart
 class _MyAppState extends State<MyApp> {
@@ -852,7 +852,7 @@ class _MyAppState extends State<MyApp> {
 };
 ```
 
-1. map자료를 저장하고 싶으면?
+4. map자료를 저장하고 싶으면?
     
     JSON 형태로 변환해서 저장하자!
     
