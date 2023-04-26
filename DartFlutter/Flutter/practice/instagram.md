@@ -1418,3 +1418,60 @@ import './notification.dart';
 4. 알림에 사용할 app_icon 파일을 디렉토리에 추가한다
     
     디텍토리 위치 : `android/app/main/res/drawable/app_icon.png`
+
+### 반응형 사이즈 대응하기
+
+`MediaQuery.of(context).size.width` 를 통해 사용자 기기의 너비를 알 수 있다.
+
+```dart
+class _MyAppState extends State<MyApp> {
+	...
+	@override
+  Widget build(BuildContext context) {
+
+    MediaQuery.of(context).size.width; // 현재 유저 기기의 너비를 알려줌 (단위: LP)
+    // MediaQuery.of(context).size.height; // 현재 유저 기기의 높이를 알려줌
+    // MediaQuery.of(context).padding.top; // 현재 유저 기기의 상태바 윗 여백 (배젤높이)
+    // MediaQuery.of(context).devicePixelRatio; // 해상도 (1LP에 몇px이 들어가는지) 고해상도 기기일수록 3~4정도로 커짐
+    // MediaQuery.of(context).textScaleFactor; // 사용자가 글자를 몇배 키워서 보고있는지 확인
+```
+
+너비를 알게 되면, if문 혹은 삼항연산자로 반응형 디자인을 할 수 있다.
+
+```dart
+// 너비가 600이 넘으면 글자 크기를 30, 600보다 작으면 글자 크기를 16으로 하고싶다.
+function Style1(context){
+	if (MediaQuery.of(context).size.width > 600){
+		return 30;
+	}
+	else {
+		return 16;
+	}
+}
+
+class _MyAppState extends State<MyApp> {
+	...
+	@override
+  Widget build(BuildContext context) {
+	return Scaffold(
+	appBar: AppBar(
+		// 반응형 글자 크기
+		title: Text('Instagram', style: TextStyle(
+			fontSize: Style1(context)
+		)),
+		// ...
+	)
+)
+```
+
+### 해상도 별로 다른 이미지 넣는 법
+
+고해상도의 경우 일반 이미지 파일을 넣으면 저화질로 깨질 수 있다.
+
+따라서, 여러 해상도의 이미지를 넣어서 유저 해상도에 맞춰 적절한 이미지를 사용하는 방법이 있다.
+
+ `Image.asset(’assets/icon.jpg’)` 를 사용해 아이콘을 띄운다 가정해보자.
+
+assets/2.0x/icon.jpg → devicePixelRatio가 1~2인 경우 자동으로 여기서 가져다 씀 → 두배로 키운 이미지 넣자
+
+assets/3.0x/icon.jpg → devicePixelRatio가 2~3인 경우 자동으로 여기서 가져다 씀 → 세배로 키운 이미지 넣자
