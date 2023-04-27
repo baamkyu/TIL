@@ -1475,3 +1475,78 @@ class _MyAppState extends State<MyApp> {
 assets/2.0x/icon.jpg → devicePixelRatio가 1~2인 경우 자동으로 여기서 가져다 씀 → 두배로 키운 이미지 넣자
 
 assets/3.0x/icon.jpg → devicePixelRatio가 2~3인 경우 자동으로 여기서 가져다 씀 → 세배로 키운 이미지 넣자
+
+### Firebase
+
+서버 대신 서버의 역할을 해줄 수 있는 서비스
+
+가능한 기능 : 회원 로그인 기능, DB 입출력 기능, 사진 업로드 기능 등
+
+Firestore 데이터베이스 읽기요청 일일 5만회 무료
+
+Storage 하드디스크 5GB까지 무료
+
+### Firebase 사용법
+
+1. 패키지 설치 (코드 작성 후 Pub get)
+
+```dart
+// pubspec.yaml
+dependencies:
+	//...
+	firebase_core: ^1.10.6
+	firebase_auto: ^3.3.4
+	cloud_firestore: ^3.1.5
+```
+
+1. Firebase 프로젝트 생성
+    1. 구글에 Firebase console 검색해 들어가서 프로젝트 생성
+    2. 번들 입력 - `android/app/build.gradle` 파일의 `applicationId`
+    3. 앱 닉네임 입력 - 선택사항
+    4. 계속 다음 누른다.
+2. Flutter앱에 Firebase 셋팅
+    
+    터미널 창에 `dart pub global activate flutterfire_cli` 입력
+    
+3. 터미널에 나온 경로를 환경변수 등록
+4. 설치
+    
+    터미널 창에 `flutterfire configure` 입력
+    
+5. 설치 중에 bundle id 입력하라는 창이 나오면 아까 프로젝트 생성할 때 작성한 ID 입력
+6. 코드에 아래의 코드 입력
+    
+    ```dart
+    import 'package:firebase_core/firebase_core.dart';
+    import 'firebase_options.dart';
+    
+    void main() async {
+    	WidgetsFlutterBinding.ensureInitialized();
+    	await Firebase.initializeApp(
+    		options: DefaultFirebaseOptions.currentPlatform,
+    	);
+    ```
+    
+7. minSdkVersion 높이기
+    
+    Firebase에서 최소 요구하는 sdk version이 있음. 따라서 맞춰서 높여주자
+    
+    - 안드로이드
+    
+    `android/app/build.gradle` 에서
+    
+    ```dart
+    defaultConfig {
+    	// ...
+    	minSdkVersion 21 // 21 혹은 19로 설정
+    	// ...
+    }
+    ```
+    
+    - 맥북
+    
+    `ios/Podfile`에서
+    
+    ```dart
+    platform: ios, '10.0' // 10 이상
+    ```
