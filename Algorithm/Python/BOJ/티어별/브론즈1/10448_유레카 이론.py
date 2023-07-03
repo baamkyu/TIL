@@ -1,23 +1,21 @@
-import sys
+# 자연수 n에 대해 n ≥ 1의 삼각수 Tn는 명백한 공식이 있다.
+# Tn = 1 + 2 + 3 + ... + n = n(n+1)/2
+# 1796년, 가우스는 모든 자연수가 최대 3개의 삼각수의 합으로 표현될 수 있다고 증명하였다.
 
-answer = [0] * 1001
-triangleNum = []
-for i in range(1, 45):
-    triangleNum.append(i * (i + 1) // 2)
+# 주어진 정수가 정확히 3개의 삼각수의 합으로 표현될 수 있는지 없는지를 판단해주는 프로그램을 만들어라. 
+# 단, 3개의 삼각수가 모두 달라야 할 필요는 없다.
 
-for one in triangleNum:
-    for two in triangleNum:
-        for three in triangleNum:
-            if one + two + three <= 1000:
-                answer[one + two + three] = 1
+Tn = [n*(n+1)//2 for n in range(1, 45)]     # 삼각 수로 이루어질 수 있는 모든 값들
 
-# print(answer)
+check = [0] * 1001  # 3 <= N <= 1000이기 때문에
+for i in Tn:
+    for j in Tn:
+        for k in Tn:
+            if i + j + k <= 1000:
+                check[i+j+k] = 1
 
-input = sys.stdin.readline
 T = int(input())
-K = []
 for _ in range(T):
-    K.append(int(input()))
+    n = int(input())
 
-for target in K:
-    print(answer[target])
+    print(check[n])
