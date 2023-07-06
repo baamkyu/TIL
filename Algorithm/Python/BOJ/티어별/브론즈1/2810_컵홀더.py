@@ -4,5 +4,16 @@
 
 N = int(input())
 seats = list(input())
+S_cnt = L_cnt = 0
 for seat in seats:
-    
+    if seat == 'L':
+        L_cnt += 1
+    if seat == 'S':
+        S_cnt += 1
+
+cup = 1 + S_cnt + L_cnt//2
+
+if cup < N:
+    print(cup)
+else:
+    print(N)
