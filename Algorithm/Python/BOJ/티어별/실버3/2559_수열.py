@@ -6,7 +6,8 @@ input = sys.stdin.readline
 N, K = map(int, input().split())
 arr = list(map(int, input().split()))
 
-ans = [sum(arr[:K])]    # 첫번째 K까지의 합
+# 첫번째 K까지의 합
+ans = [sum(arr[:K])]
 
 # ans[-1] == K개의 합 이니까 다음 K개의 합을 구하려면 arr[i]을 빼고 arr[i+K]를 더해주면 됨
 for i in range(N-K):
