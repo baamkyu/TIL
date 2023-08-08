@@ -18,35 +18,73 @@
 # third sunday of march
 # last monday of april
 
-N = int(input())
-isLeap = input()
-firstDay = input()
+# N = int(input())
+# isLeap = input()
+# firstDay = input()
 
-month_list = [['january', 1], ['february', 2], ['march', 3], ['april', 4], ['may', 5], ['june', 6], 
-                  ['july', 7], ['august', 8], ['september', 9], ['october', 10], ['november', 11], ['december', 12]]
-day_list = [['sunday', 1], ['monday', 2], ['tuesday', 3], ['wednesday', 4], ['thursday', 5], ['friday', 6], ['saturday', 7]]
+# month_list = [['january', 1], ['february', 2], ['march', 3], ['april', 4], ['may', 5], ['june', 6], 
+#                   ['july', 7], ['august', 8], ['september', 9], ['october', 10], ['november', 11], ['december', 12]]
+# day_list = [['sunday', 1], ['monday', 2], ['tuesday', 3], ['wednesday', 4], ['thursday', 5], ['friday', 6], ['saturday', 7]]
     
-if isLeap == 'leap':
-    month_day = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-else:
-    month_day = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+# if isLeap == 'leap':
+#     month_day = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+# else:
+#     month_day = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
+# for _ in range(N):
+#     num, day, trash, month = map(str, input().split())
+
+# # 매달 첫번째 요일 구하기
+# firstday_of_month = [0] * 12
+# for i in day_list:
+#     if firstDay == i[0]:
+#         firstday_of_month[0] = i[1]
+#         break
+
+# for i in range(1, 12):
+#     firstday_of_month[i] = (firstday_of_month[i-1] + month_day[i] % 7) % 7
+
+
+# # 며칠인지 구하기
+# for i in day_list:
+#     if i[0] == day:
+#         if i[1] < firstday_of_month[]:   # 찾는 요일이 시작일보다 전일때
+#           int(day) 
+
+N = int(input())
+yooncal = (31,29,31,30,31,30,31,31,30,31,30,31)
+noyooncal = (31,28,31,30,31,30,31,31,30,31,30,31)
+prio_list = ('first', 'second', 'third', 'fourth', 'last')
+month_list = ('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december')
+day_list = ('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday')
+mycal = yooncal if input()=="leap" else noyooncal
+firstday = input()
+idx = day_list.index(firstday)
 for _ in range(N):
-    num, day, trash, month = map(str, input().split())
-
-# 매달 첫번째 요일 구하기
-firstday_of_month = [0] * 12
-for i in day_list:
-    if firstDay == i[0]:
-        firstday_of_month[0] = i[1]
-        break
-
-for i in range(1, 12):
-    firstday_of_month[i] = (firstday_of_month[i-1] + month_day[i] % 7) % 7
-
-
-# 며칠인지 구하기
-for i in day_list:
-    if i[0] == day:
-        if i[1] < firstday_of_month[]:   # 찾는 요일이 시작일보다 전일때
-          int(day) 
+    prio, day, _, mon = input().split()
+    prioval = prio_list.index(prio)
+    monval = month_list.index(mon)
+    dayval = day_list.index(day)
+    temp = idx
+    if monval: # 2월 이상
+        temp += sum(mycal[:monval])
+        temp %= 7
+        boost = 0
+        while temp%7 != dayval:
+            temp += 1
+            boost += 1
+        temp = boost + 1
+        temp += prioval*7
+        if temp > mycal[monval]:
+            temp -= 7
+        print(monval+1, temp)
+    else: # 1월
+        temp_list = day_list[idx:] + day_list[:idx]
+        dayval = temp_list.index(day)
+        while temp != dayval:
+            temp += 1
+            temp %= 7
+        temp += prioval*7
+        if temp > 31:
+            temp -= 7
+        print(1, temp+1)
