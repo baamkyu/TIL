@@ -40,8 +40,7 @@ firstday_of_month[0] = day_list.index(firstDay)
 for i in range(1, 12):
     firstday_of_month[i] = (firstday_of_month[i-1] + month_day[i-1] % 7) % 7
 
-print(firstday_of_month)
-
+# print(firstday_of_month)
 
 
 
@@ -51,7 +50,6 @@ for _ in range(N):
     ans_mon = month_list.index(month)+1
 
     # 그 달의 1일 요일과 구하려는 요일 비교
-    # i[1] == 구하려는 요일, firstday_of_month[month_list.index(month)] == 구하려는 달의 1일 요일
     if day_list.index(day) < firstday_of_month[month_list.index(month)]:
         ans_day = day_list.index(day) - firstday_of_month[month_list.index(month)] + 1 + (week_list.index(num)+1) * 7
         if ans_day > month_day[ans_mon - 1]:
