@@ -1,7 +1,7 @@
-import sys
-input = sys.stdin.readline
+# import sys
+# input = sys.stdin.readline
 
-# sol 1. 내가 푼 풀이 (시간초과)
+# # sol 1. 내가 푼 풀이 (시간초과)
 
 # lst = list(input())
 # for i in range(len(lst)):
@@ -42,6 +42,9 @@ input = sys.stdin.readline
 # print(ans)
 
 # sol 2. 인터넷 찾아본 풀이
+import sys
+input = sys.stdin.readline
+
 lst = list(input())
 stack = []
 ans = 0
