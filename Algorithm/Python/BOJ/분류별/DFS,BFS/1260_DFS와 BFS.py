@@ -8,15 +8,16 @@ from collections import deque
 def dfs(v):
   dfs_visit_list[v] = 1        
   print(v, end = " ")
+  # 재귀함수 선언 (v와 인접한 곳을 찾고 방문하지 않았다면 함수 실행)
   for i in range(1, N + 1):
     if dfs_visit_list[i] == 0 and graph[v][i] == 1:
       dfs(i)
 
 def bfs(v):
   q = deque()
-  q.append(v)       
-  bfs_visit_list[v] = 1   
-  while q:
+  q.append(v)   # 방문해야할 곳을 순서대로 넣음       
+  bfs_visit_list[v] = 1   # 방문 체크
+  while q:      # 큐 안에 데이터가 없을 때까지
     v = q.popleft()
     print(v, end = " ")
     for i in range(1, N + 1):
@@ -26,7 +27,7 @@ def bfs(v):
 
 
 N, M, V = map(int, input().split()) # N: 정점의 개수, M: 간선의 개수, V: 탐색 시작할 정점의 번호
-graph = [[0] * (N+1) for _ in range(N+1)]
+graph = [[0] * (N+1) for _ in range(N+1)] # 인접행렬 생성
 dfs_visit_list = [0] * (N+1)
 bfs_visit_list = [0] * (N+1)
 
@@ -34,7 +35,7 @@ bfs_visit_list = [0] * (N+1)
 # 간선 표시
 for _ in range(M):
     s, e = map(int, input().split())
-    graph[s][e] = graph[e][s] = 1
+    graph[s][e] = graph[e][s] = 1   
 # print(graph)
 
 # q = deque()
