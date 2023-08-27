@@ -7,7 +7,7 @@ N = int(input())
 ans = 99
 
 if N < 100:
-    print(N-1)
+    print(N)
 else:
     for i in range(100, N+1):
         num_list = list(map(int, str(i)))
