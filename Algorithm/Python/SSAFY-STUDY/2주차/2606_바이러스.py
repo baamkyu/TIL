@@ -28,6 +28,7 @@ def dfs(v):
     for nx in graph[v]:
         if visited[nx]==0:
             dfs(nx)
+
 dfs(1)  # 1번에서 출발
 print(sum(visited)-1) # 1번을 제외한 감염된 컴퓨터 수
 
